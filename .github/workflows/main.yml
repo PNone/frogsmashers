@@ -132,7 +132,7 @@ jobs:
           path: build
 
   buildWithWindows:
-    needs: [build, buildWithMac]
+    needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for Windows
     runs-on: windows-2019
