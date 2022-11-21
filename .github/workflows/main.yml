@@ -78,9 +78,6 @@ jobs:
       matrix:
         targetPlatform:
           - StandaloneLinux64
-          - iOS
-          - Android
-          - WebGL
     steps:
       - uses: actions/checkout@v3
         with:
@@ -145,7 +142,6 @@ jobs:
         targetPlatform:
           - StandaloneWindows
           - StandaloneWindows64
-          - WSAPlayer
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
