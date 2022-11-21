@@ -69,7 +69,7 @@ jobs:
   build:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
-    name: Build for ${{ matrix.targetPlatform }}
+    name: Build for Linux
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -100,7 +100,7 @@ jobs:
   buildWithMac:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
-    name: Build for ${{ matrix.targetPlatform }}
+    name: Build for MacOs
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -132,7 +132,7 @@ jobs:
   buildWithWindows:
     needs: [build, buildWithMac]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
-    name: Build for ${{ matrix.targetPlatform }}
+    name: Build for Windows
     runs-on: windows-2019
     strategy:
       fail-fast: false
