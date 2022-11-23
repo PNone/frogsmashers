@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
     public static bool charactersBounceEachOther = false;
     public static bool weirdBounceTrajectories = false;
     public static bool onlyBounceBeforeRecover = true;
-    public static bool allowTeamMode = false;
+    public static bool allowTeamMode = true;
     public static bool allowCustomScoreToWin = false;
     public static float customScoreToWin = 10f;
 
@@ -227,7 +227,7 @@ public class GameController : MonoBehaviour
             if (assignedPlayers == 0 && allowTeamMode)
             {
 
-                if (Input.GetKeyDown(KeyCode.F5))
+                if (Input.GetKeyDown(KeyCode.F5) || Input.GetKeyDown(KeyCode.JoystickButton6)) // Controller back button
                 {
                     isTeamMode = !isTeamMode;
                     joinGameModeText.text = isTeamMode ? "TEAM" : "FREE  FOR  ALL";
@@ -698,7 +698,7 @@ public class GameController : MonoBehaviour
             charactersBounceEachOther = GUILayout.Toggle(charactersBounceEachOther, "Characters Bounce Each Other");
             weirdBounceTrajectories = GUILayout.Toggle(weirdBounceTrajectories, "Weird Bounce Trajectories");
             onlyBounceBeforeRecover = GUILayout.Toggle(onlyBounceBeforeRecover, "Only Bounce Before Recover");
-            allowTeamMode = GUILayout.Toggle(allowTeamMode, "Allow Team Deathmatch (F5 to toggle mode)");
+            allowTeamMode = GUILayout.Toggle(allowTeamMode, "Allow Team Deathmatch (F5/back to toggle mode)");
             allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
             customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
             GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
