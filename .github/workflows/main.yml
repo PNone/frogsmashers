@@ -133,12 +133,6 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           buildName: FrogSmashersOSX
-          versioning: Semantic
-      - name: Zip up output
-        run: |
-          cd build/FrogSmashersOSX
-          ls
-          zip -r ../../FrogSmashersOSX.zip *
       - name: Upload Build
         uses: actions/upload-artifact@v3
         with:
@@ -185,12 +179,7 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           buildName: FrogSmashers${{ matrix.targetPlatform }}
-          versioning: Semantic
-      - name: Zip up output
-        run: |
-          cd build/FrogSmashersStandaloneWindows64
-          ls
-          zip -r ../../FrogSmashersWindows64.zip *
+#           versioning: Semantic
       - name: Upload Build
         uses: actions/upload-artifact@v3
         with:
