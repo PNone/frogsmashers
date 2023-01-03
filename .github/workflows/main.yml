@@ -1,14 +1,14 @@
-name: Frog Smashers Publish Release
+name: Frog Smashers Unity Actions
 # Frog Smashers Unity Actions (Copied from https://github.com/game-ci/unity-actions-example/blob/main/.github/workflows/main.yml)
 
 
-# on:
-#   pull_request: {}
-#   push: {}
 on:
-  push:
-    tags:
-      - '*'
+  pull_request: {}
+  push: {}
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -138,18 +138,18 @@ jobs:
         with:
           name: FrogSmashersOSX
           path: build
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_name: PNone/frogsmashers
-          # A personal access token for the GitHub repository in which the release will be created and edited.
-          # It is recommended to create the access token with the following scopes: `repo, user, admin:repo_hook`.
-          repo_token: ${{ env.GIT_ACCESS_TOKEN }}
-          file: build/StandaloneOSX
-          asset_name: StandaloneOSX
-          tag: ${{ github.ref }}
-          overwrite: true
-          body: "New release for frog smashers"
+#       - name: Upload binaries to release
+#         uses: svenstaro/upload-release-action@v2
+#         with:
+#           repo_name: PNone/frogsmashers
+#           # A personal access token for the GitHub repository in which the release will be created and edited.
+#           # It is recommended to create the access token with the following scopes: `repo, user, admin:repo_hook`.
+#           repo_token: ${{ env.GIT_ACCESS_TOKEN }}
+#           file: build/StandaloneOSX
+#           asset_name: StandaloneOSX
+#           tag: ${{ github.ref }}
+#           overwrite: true
+#           body: "New release for frog smashers"
 
   buildWithWindows:
     needs: [checklicense]
@@ -185,15 +185,15 @@ jobs:
         with:
           name: StandaloneWindows64
           path: build
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_name: PNone/frogsmashers
-          # A personal access token for the GitHub repository in which the release will be created and edited.
-          # It is recommended to create the access token with the following scopes: `repo, user, admin:repo_hook`.
-          repo_token: ${{ env.GIT_ACCESS_TOKEN }}
-          file: build/StandaloneWindows64
-          asset_name: StandaloneWindows64
-          tag: ${{ github.ref }}
-          overwrite: true
-          body: "New release for frog smashers"
+#       - name: Upload binaries to release
+#         uses: svenstaro/upload-release-action@v2
+#         with:
+#           repo_name: PNone/frogsmashers
+#           # A personal access token for the GitHub repository in which the release will be created and edited.
+#           # It is recommended to create the access token with the following scopes: `repo, user, admin:repo_hook`.
+#           repo_token: ${{ env.GIT_ACCESS_TOKEN }}
+#           file: build/StandaloneWindows64
+#           asset_name: StandaloneWindows64
+#           tag: ${{ github.ref }}
+#           overwrite: true
+#           body: "New release for frog smashers"
