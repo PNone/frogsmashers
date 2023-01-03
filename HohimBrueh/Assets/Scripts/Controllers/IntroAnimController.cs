@@ -79,14 +79,14 @@ public class IntroAnimController : MonoBehaviour
         InputReader.GetInput(input);
         if (cameraPosM == 1f)
         {
-            if (input.start && !input.wasStart)
+            if (Input.GetKeyDown(KeyCode.JoystickButton7)) // Start button
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene("JoinScreen");
             }
         }
         else
         {
-            if (input.start && !input.wasStart)
+            if (Input.GetKeyDown(KeyCode.JoystickButton7)) // Start button
             {
                 animator.CrossFade(animator.GetCurrentAnimatorStateInfo(-1).shortNameHash, 0f, 0, 0.95f);
                 cameraPanning = true;
