@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using FreeLives;
 using UnityEngine;
@@ -19,6 +21,7 @@ public class GameController : MonoBehaviour
     public static bool weirdBounceTrajectories = false;
     public static bool onlyBounceBeforeRecover = true;
     public static bool allowTeamMode = true;
+    public static bool randomizeMaps = false;
     public static bool allowCustomScoreToWin = false;
     public static float customScoreToWin = 10f;
 
@@ -54,6 +57,7 @@ public class GameController : MonoBehaviour
 
     public bool isJoinScreen;
 
+    private static List<string> originalLevelNames = new List<string> { "1BusStop", "2DownSmash", "3Moon", "4FinalFrogstination", "5Skyline", "6Finale" };
     public static string[] levelNames = new string[] { "1BusStop", "2DownSmash", "3Moon", "4FinalFrogstination", "5Skyline", "6Finale" };
     public JoinCanvas[] joinCanvas;
 
@@ -261,7 +265,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    flySpawnDelay = Random.Range(15f, 45f);
+                    flySpawnDelay = UnityEngine.Random.Range(15f, 45f);
                 }
 
 
@@ -319,7 +323,7 @@ public class GameController : MonoBehaviour
                     if (input.xButton)
                     {
                         print(inactivePlayers[i].color + ", " + inactivePlayers[i].inputDevice);
-                        inactivePlayers[i].color = playerColors[Random.Range(0, playerColors.Length)];
+                        inactivePlayers[i].color = playerColors[UnityEngine.Random.Range(0, playerColors.Length)];
                         AddPlayer(inactivePlayers[i]);
 
 
@@ -455,6 +459,16 @@ public class GameController : MonoBehaviour
                     activePlayers.Add(jc.assignedPlayer);
 
             }
+            if (randomizeMaps)
+            {
+                System.Random random = new System.Random();
+                levelNames = originalLevelNames.OrderBy(x => random.Next()).ToArray();
+            }
+            else 
+            {
+                levelNames = originalLevelNames.ToArray();
+            }
+            
             SceneManager.LoadScene(levelNames[0]);
         }
         else
@@ -699,6 +713,7 @@ public class GameController : MonoBehaviour
             weirdBounceTrajectories = GUILayout.Toggle(weirdBounceTrajectories, "Weird Bounce Trajectories");
             onlyBounceBeforeRecover = GUILayout.Toggle(onlyBounceBeforeRecover, "Only Bounce Before Recover");
             allowTeamMode = GUILayout.Toggle(allowTeamMode, "Allow Team Deathmatch (F5/back to toggle mode)");
+            randomizeMaps = GUILayout.Toggle(randomizeMaps, "Randomize Map Order");
             allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
             customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
             GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
