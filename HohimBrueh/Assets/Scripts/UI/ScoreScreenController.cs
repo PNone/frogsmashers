@@ -102,7 +102,7 @@ public class ScoreScreenController : MonoBehaviour
         if (!haveUpdatedScores)
         {
             haveUpdatedScores = true;
-            if (GameController.isTeamMode)
+            if (GameController.isTeamMode && GameController.winnerTakesAll)
             {
                 foreach (var player in GameController.activePlayers)
                 {
@@ -114,6 +114,23 @@ public class ScoreScreenController : MonoBehaviour
             }
             foreach (var psd in playerScoreDisplays)
             {
+                if (!GameController.winnerTakesAll) 
+                {
+                    if (GameController.isTeamMode)
+                    {
+                        foreach (var activePlayer in GameController.activePlayers) 
+                        {
+                            if (activePlayer.team == psd.player.team)
+                            {
+                                psd.player.roundWins += activePlayer.score;
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        psd.player.roundWins += psd.player.score;
+                    }
+                }
                 if (GameController.isTeamMode)
                 {
                     if (psd.player.team == GameController.lastWinningPlayer.team)
@@ -128,7 +145,10 @@ public class ScoreScreenController : MonoBehaviour
                 {
                     if (psd.player == GameController.lastWinningPlayer)
                     {
-                        psd.player.roundWins++;
+                        if (GameController.winnerTakesAll) 
+                        {
+                            psd.player.roundWins++;
+                        }
                         if (GameController.isShowDown)
                             psd.TemorarilyDisplay("WINNER!", 10f);
                         else
