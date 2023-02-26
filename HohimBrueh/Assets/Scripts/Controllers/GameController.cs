@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
     public static bool onlyBounceBeforeRecover = true;
     public static bool allowTeamMode = true;
     public static bool randomizeMaps = false;
+    public static bool winnerTakesAll = true;
     public static bool allowCustomScoreToWin = false;
     public static float customScoreToWin = 10f;
 
@@ -714,6 +715,7 @@ public class GameController : MonoBehaviour
             onlyBounceBeforeRecover = GUILayout.Toggle(onlyBounceBeforeRecover, "Only Bounce Before Recover");
             allowTeamMode = GUILayout.Toggle(allowTeamMode, "Allow Team Deathmatch (F5/back to toggle mode)");
             randomizeMaps = GUILayout.Toggle(randomizeMaps, "Randomize Map Order");
+            winnerTakesAll = GUILayout.Toggle(winnerTakesAll, "Only Winners Get Points");
             allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
             customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
             GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
