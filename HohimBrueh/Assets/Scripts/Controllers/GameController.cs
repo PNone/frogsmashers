@@ -58,7 +58,7 @@ public class GameController : MonoBehaviour
 
     public bool isJoinScreen;
 
-    private static List<string> originalLevelNames = new List<string> { "1BusStop", "2DownSmash", "3Moon", "4FinalFrogstination", "5Skyline", "6Finale" };
+    private static List<string> originalLevelNames = new List<string> { "3Podium", "1BusStop", "2DownSmash", "3Moon", "4FinalFrogstination", "5Skyline", "6Finale" };
     public static string[] levelNames = new string[] { "1BusStop", "2DownSmash", "3Moon", "4FinalFrogstination", "5Skyline", "6Finale" };
     public JoinCanvas[] joinCanvas;
 
