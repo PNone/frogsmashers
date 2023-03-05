@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
     public static bool allowTeamMode = true;
     public static bool randomizeMaps = false;
     public static bool winnerTakesAll = true;
+    public static bool punishSelfDeath = false;
     public static bool allowCustomScoreToWin = false;
     public static float customScoreToWin = 10f;
 
@@ -661,21 +662,20 @@ public class GameController : MonoBehaviour
 
 
         }
-        else if (gotKilled != null)
+        else if (gotKilled != null && punishSelfDeath)
         {
-
-            //if (isTeamMode)
-            //{
-            //    if (gotKilled.team == Team.Blue)
-            //        instance.blueTeamScore--;
-            //    else
-            //        instance.redTeamScore--;
-            //}
-            //else
-            //{
-            //    gotKilled.score--;
-            //}
-            //instance.GetPlayerScoreDisplay(gotKilled).TemorarilyDisplay("-" + 1);
+            if (isTeamMode)
+            {
+               if (gotKilled.team == Team.Blue)
+                   instance.blueTeamScore--;
+               else
+                   instance.redTeamScore--;
+            }
+            else
+            {
+               gotKilled.score--;
+            }
+            instance.GetPlayerScoreDisplay(gotKilled).TemorarilyDisplay("-" + 1);
         }
 
         instance.SortScoreboard();
@@ -716,6 +716,7 @@ public class GameController : MonoBehaviour
             allowTeamMode = GUILayout.Toggle(allowTeamMode, "Allow Team Deathmatch (F5/back to toggle mode)");
             randomizeMaps = GUILayout.Toggle(randomizeMaps, "Randomize Map Order");
             winnerTakesAll = GUILayout.Toggle(winnerTakesAll, "Only Winners Get Points");
+            punishSelfDeath = GUILayout.Toggle(punishSelfDeath, "Self-Kills Lose Points");
             allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
             customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
             GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
