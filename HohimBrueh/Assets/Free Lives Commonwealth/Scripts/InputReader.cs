@@ -20,7 +20,7 @@ namespace FreeLives
         static KeyCode kb1X = KeyCode.Period;
         static KeyCode kb1Y = KeyCode.Slash;
         static KeyCode kb1Start = KeyCode.Return;
-        static KeyCode kb1Straif = KeyCode.N;
+        static KeyCode kb1Strafe = KeyCode.N;
 
         static KeyCode kb2Left = KeyCode.A;
         static KeyCode kb2Right = KeyCode.D;
@@ -31,7 +31,7 @@ namespace FreeLives
         static KeyCode kb2X = KeyCode.U;
         static KeyCode kb2Y = KeyCode.I;
         static KeyCode kb2Start = KeyCode.Space;
-        static KeyCode kb2Straif = KeyCode.R;
+        static KeyCode kb2Strafe = KeyCode.R;
 
 
         static float deadZone = 0.3f;
@@ -180,7 +180,7 @@ namespace FreeLives
             inputState.aButton = Input.GetKey(kb1A);
             inputState.bButton = Input.GetKey(kb1B);
             inputState.start = Input.GetKey(kb1Start);
-            inputState.straif = Input.GetKey(kb1Straif);
+            inputState.strafe = Input.GetKey(kb1Strafe);
         }
 
         static void GetKeyboard2Input(InputState inputState)
@@ -213,7 +213,7 @@ namespace FreeLives
             inputState.aButton = Input.GetKey(kb2A);
             inputState.bButton = Input.GetKey(kb2B);
             inputState.start = Input.GetKey(kb2Start);
-            inputState.straif = Input.GetKey(kb2Straif);
+            inputState.strafe = Input.GetKey(kb2Strafe);
         }
 
 
@@ -239,7 +239,7 @@ namespace FreeLives
             inputState.leftTrigger = device.leftTrigger.ReadValue();
             inputState.rightTrigger = device.rightTrigger.ReadValue();
             inputState.start = device.startButton.isPressed;
-            inputState.straif = device.leftShoulder.isPressed;
+            inputState.strafe = device.leftShoulder.isPressed;
 
         }
 
