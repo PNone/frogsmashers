@@ -1050,7 +1050,7 @@ public class Character : MonoBehaviour
             RunPhysicsNormal();
         }
         velocityT = velocity * t;
-        if (state != CharacterState.Attacking && state != CharacterState.Tounge)
+        if (state != CharacterState.Attacking && state != CharacterState.Tounge && !input.strafe)
         {
             if (velocity.x > 0f)
                 facingDir = 1;
@@ -1060,6 +1060,7 @@ public class Character : MonoBehaviour
 
         jumpCooldownLeft -= t;
 
+        // TODO Add strafing here too?
         if (state == CharacterState.Tounge)
         {
             if (tongueDir.x > 0)
@@ -1127,7 +1128,10 @@ public class Character : MonoBehaviour
 
         if (input.right && state == CharacterState.Normal)
         {
-            facingDir = 1;
+            if (!input.strafe)
+            {
+                facingDir = 1;
+            }
             if (onGround)
             {
                 if (velocity.x < 0f)
@@ -1150,7 +1154,10 @@ public class Character : MonoBehaviour
         }
         else if (input.left && state == CharacterState.Normal)
         {
-            facingDir = -1;
+            if (!input.strafe)
+            {
+                facingDir = -1;
+            }
             if (onGround)
             {
                 if (velocity.x > 0f)
@@ -1202,7 +1209,7 @@ public class Character : MonoBehaviour
                 }
             }
 
-            if (attackState == AttackState.Charging)
+            if (attackState == AttackState.Charging && !input.strafe)
             {
                 if (input.right)
                 {
