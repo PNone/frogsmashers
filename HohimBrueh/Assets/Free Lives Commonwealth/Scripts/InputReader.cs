@@ -8,7 +8,7 @@ namespace FreeLives
     {
         public enum Device
         {
-            Keyboard1, Keyboard2, Gamepad1, Gamepad2, Gamepad3, Gamepad4
+            Keyboard1, Keyboard2, Gamepad1, Gamepad2, Gamepad3, Gamepad4, Gamepad5, Gamepad6, Gamepad7, Gamepad8
         }
 
         static KeyCode kb1Left = KeyCode.LeftArrow;
@@ -107,6 +107,50 @@ namespace FreeLives
                 if (GamepadHasBeenAssigned(Device.Gamepad4))
                 {
                     GetGamepadInput(UnityEngine.InputSystem.Gamepad.all[3], inputState);
+                }
+                else
+                {
+                    ClearInputState(inputState);
+                }
+            }
+            else if (device == Device.Gamepad5)
+            {
+                if (GamepadHasBeenAssigned(Device.Gamepad5))
+                {
+                    GetGamepadInput(UnityEngine.InputSystem.Gamepad.all[4], inputState);
+                }
+                else
+                {
+                    ClearInputState(inputState);
+                }
+            }
+            else if (device == Device.Gamepad6)
+            {
+                if (GamepadHasBeenAssigned(Device.Gamepad6))
+                {
+                    GetGamepadInput(UnityEngine.InputSystem.Gamepad.all[5], inputState);
+                }
+                else
+                {
+                    ClearInputState(inputState);
+                }
+            }
+            else if (device == Device.Gamepad7)
+            {
+                if (GamepadHasBeenAssigned(Device.Gamepad7))
+                {
+                    GetGamepadInput(UnityEngine.InputSystem.Gamepad.all[6], inputState);
+                }
+                else
+                {
+                    ClearInputState(inputState);
+                }
+            }
+            else if (device == Device.Gamepad8)
+            {
+                if (GamepadHasBeenAssigned(Device.Gamepad8))
+                {
+                    GetGamepadInput(UnityEngine.InputSystem.Gamepad.all[7], inputState);
                 }
                 else
                 {
@@ -270,6 +314,18 @@ namespace FreeLives
                     break;
                 case Device.Gamepad4:
                     index = 3;
+                    break;
+                case Device.Gamepad5:
+                    index = 4;
+                    break;
+                case Device.Gamepad6:
+                    index = 5;
+                    break;
+                case Device.Gamepad7:
+                    index = 6;
+                    break;
+                case Device.Gamepad8:
+                    index = 7;
                     break;
                 default:
                     break;
