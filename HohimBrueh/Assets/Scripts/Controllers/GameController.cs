@@ -73,8 +73,8 @@ public class GameController : MonoBehaviour
 
     public static bool isShowDown;
 
-    int redTeamScore, blueTeamScore;
-    PlayerScoreDisplay redTeamScoreDisplay, blueTeamScoreDisplay;
+    int redTeamScore, blueTeamScore, greenTeamScore;
+    PlayerScoreDisplay redTeamScoreDisplay, blueTeamScoreDisplay, greenTeamScoreDisplay;
 
     void Awake()
     {
@@ -151,6 +151,16 @@ public class GameController : MonoBehaviour
                     if (p.team == Team.Blue)
                         psd.player = p;
                 playerScoreDisplays.Add(psd);
+
+                psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
+                psd.color = Color.green;
+                psd.text.color = Color.green;
+                greenTeamScoreDisplay = psd;
+                foreach (var p in activePlayers)
+                    if (p.team == Team.Green)
+                        psd.player = p;
+                playerScoreDisplays.Add(psd);
+
 
             }
             else
@@ -402,7 +412,8 @@ public class GameController : MonoBehaviour
         int readyPlayers = 0;
         if (GameController.isTeamMode)
         {
-            bool redTeamHasPlayer = false, blueTeamHasPlayer = false;
+            bool redTeamHasPlayer = false, greenTeamHasPlayer = false, blueTeamHasPlayer = false;
+            int totalTeamsWithPlayers = 0;
             for (int i = 0; i < joinCanvas.Length; i++)
             {
                 if (joinCanvas[i].HasAssignedPlayer())
@@ -410,10 +421,21 @@ public class GameController : MonoBehaviour
                     if (joinCanvas[i].state == JoinCanvas.State.Ready)
                     {
                         readyPlayers++;
-                        if (joinCanvas[i].assignedPlayer.team == Team.Blue)
+                        if (joinCanvas[i].assignedPlayer.team == Team.Blue && !blueTeamHasPlayer)
+                        {
+                            totalTeamsWithPlayers++;
                             blueTeamHasPlayer = true;
-                        else if (joinCanvas[i].assignedPlayer.team == Team.Red)
+                        }
+                        else if (joinCanvas[i].assignedPlayer.team == Team.Red && !redTeamHasPlayer)
+                        {
+                            totalTeamsWithPlayers++;
                             redTeamHasPlayer = true;
+                        }
+                        else if (joinCanvas[i].assignedPlayer.team == Team.Green && !greenTeamHasPlayer)
+                        {
+                            totalTeamsWithPlayers++;
+                            greenTeamHasPlayer = true;
+                        }
                     }
                     else
                     {
@@ -422,7 +444,7 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            return redTeamHasPlayer && blueTeamHasPlayer && readyPlayers >= 2;
+            return totalTeamsWithPlayers >= 2 && readyPlayers >= 2;
         }
         else
         {
@@ -552,6 +574,7 @@ public class GameController : MonoBehaviour
         {
             redTeamScoreDisplay.player.score = redTeamScore;
             blueTeamScoreDisplay.player.score = blueTeamScore;
+            greenTeamScoreDisplay.player.score = greenTeamScore;
         }
         instance.playerScoreDisplays.Sort((x, y) => (y.player.score * 100 + y.player.sortPriority) - (x.player.score * 100 + x.player.sortPriority));
     }
@@ -624,6 +647,8 @@ public class GameController : MonoBehaviour
             {
                 if (gotPoint.team == Team.Blue)
                     instance.blueTeamScore += hits;
+                else if (gotPoint.team == Team.Green)
+                    instance.greenTeamScore += hits;
                 else
                     instance.redTeamScore += hits;
             }
@@ -637,7 +662,8 @@ public class GameController : MonoBehaviour
             {
                 bool redWon = allowCustomScoreToWin ? instance.redTeamScore >= (int)customScoreToWin : instance.redTeamScore >= 10;
                 bool blueWon = allowCustomScoreToWin ? instance.blueTeamScore >= (int)customScoreToWin : instance.blueTeamScore >= 10;
-                wonRound = ((gotPoint.team == Team.Red && redWon) || (gotPoint.team == Team.Blue && blueWon));
+                bool greenWon = allowCustomScoreToWin ? instance.greenTeamScore >= (int)customScoreToWin : instance.greenTeamScore >= 10;
+                wonRound = ((gotPoint.team == Team.Red && redWon) || (gotPoint.team == Team.Blue && blueWon) || (gotPoint.team == Team.Green && greenWon));
             }
             else
             { 
@@ -676,6 +702,8 @@ public class GameController : MonoBehaviour
             {
                if (gotKilled.team == Team.Blue)
                    instance.blueTeamScore--;
+               else if (gotKilled.team == Team.Green)
+                   instance.greenTeamScore--;
                else
                    instance.redTeamScore--;
             }
@@ -697,6 +725,8 @@ public class GameController : MonoBehaviour
         {
             if (player.team == Team.Red)
                 return redTeamScoreDisplay;
+            else if (player.team == Team.Green)
+                return greenTeamScoreDisplay;
             else
                 return blueTeamScoreDisplay;
         }
@@ -792,15 +822,28 @@ public class GameController : MonoBehaviour
         }
         if (GameController.isTeamMode)
         {
-            bool redIsTied = false, blueIsTied = false;
+            int tiedTeams = 0;
+            bool redIsTied = false, greenIsTied = false, blueIsTied = false;
             foreach (var p in tiedPlayers)
             {
-                if (p.team == Team.Red)
+                if (p.team == Team.Red && !redIsTied)
+                {
+                    tiedTeams++;
                     redIsTied = true;
-                if (p.team == Team.Blue)
+                }
+                if (p.team == Team.Green && !greenIsTied)
+                {
+                    tiedTeams++;
+                    greenIsTied = true;
+                }
+                if (p.team == Team.Blue && !blueIsTied)
+                {
+                    tiedTeams++;
                     blueIsTied = true;
+                }
             }
-            return redIsTied && blueIsTied;
+            // At least 2 teams have the same score
+            return tiedTeams > 1;
         }
         else
             return tiedPlayers.Count > 1;
