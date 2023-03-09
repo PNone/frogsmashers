@@ -5,7 +5,8 @@ using UnityEngine;
 public enum Team
 {
     Blue,
-    Red
+    Red,
+    Green
 }
 
 public class Player

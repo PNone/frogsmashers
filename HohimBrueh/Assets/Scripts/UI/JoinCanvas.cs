@@ -56,6 +56,8 @@ public class JoinCanvas : MonoBehaviour
                 if (input.bButton && !input.wasBButton)
                 {
                     if (assignedPlayer.team == Team.Red)
+                        assignedPlayer.team = Team.Green;
+                    else if (assignedPlayer.team == Team.Green)
                         assignedPlayer.team = Team.Blue;
                     else assignedPlayer.team = Team.Red;
 
@@ -65,6 +67,10 @@ public class JoinCanvas : MonoBehaviour
                     if (assignedPlayer.team == Team.Red)
                     {
                         color = assignedPlayer.color = Color.Lerp(Color.red, Color.white, colorLerpAmount);
+                    }
+                    else if (assignedPlayer.team == Team.Green)
+                    {
+                        color = assignedPlayer.color = Color.Lerp(Color.green, Color.white, colorLerpAmount);
                     }
                     else
                     {
@@ -79,7 +85,18 @@ public class JoinCanvas : MonoBehaviour
                     colorLerpAmount = Mathf.MoveTowards(colorLerpAmount, 0f, Time.deltaTime * 0.5f);
                 else if (input.right)
                     colorLerpAmount = Mathf.MoveTowards(colorLerpAmount, 0.7f, Time.deltaTime * 0.5f);
-                color = assignedPlayer.color = frogImage.color = Color.Lerp(assignedPlayer.team == Team.Red ? Color.red : Color.blue, Color.white, colorLerpAmount);
+                
+                var leftArgOfLerp = Color.red;
+                if (assignedPlayer.team == Team.Green) 
+                {
+                    leftArgOfLerp = Color.green;
+                }
+                else if (assignedPlayer.team == Team.Blue) 
+                {
+                    leftArgOfLerp = Color.blue;
+                }
+                
+                color = assignedPlayer.color = frogImage.color = Color.Lerp(leftArgOfLerp, Color.white, colorLerpAmount);
 
 
             }
@@ -133,11 +150,28 @@ public class JoinCanvas : MonoBehaviour
             changeColorText.text = "CHANGE TEAM";
 
 
-
-            player.team = Random.value < 0.5f ? Team.Red : Team.Blue;
+            var randomTeamResult = Team.Red;
+            var randomFloat = Random.value;
+            if (randomFloat < 0.34f) 
+            {
+                randomTeamResult = Team.Red;
+            }
+            else if (randomFloat > 0.33f && randomFloat < 0.67f) 
+            {
+                randomTeamResult = Team.Green;
+            }
+            else
+            {
+                randomTeamResult = Team.Blue;
+            }
+            player.team = randomTeamResult;
             if (assignedPlayer.team == Team.Red)
             {
                 color = assignedPlayer.color = Color.Lerp(Color.red, Color.white, Random.Range(0f, 0.7f));
+            }
+            else if (assignedPlayer.team == Team.Green)
+            {
+                color = assignedPlayer.color = Color.Lerp(Color.green, Color.white, Random.Range(0f, 0.7f));
             }
             else
             {
