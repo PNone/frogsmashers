@@ -196,6 +196,9 @@ public class ScoreScreenController : MonoBehaviour
                 UnityEngine.SceneManagement.SceneManager.LoadScene(GameController.levelNames[GameController.levelNo]);
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 }
