@@ -136,35 +136,43 @@ public class GameController : MonoBehaviour
                 }
 
 
+                bool foundRed = false;
+                bool foundGreen = false;
+                bool foundBlue = false;
                 var psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                psd.color = Color.red;
-                psd.text.color = Color.red;
-                redTeamScoreDisplay = psd;
                 foreach (var p in activePlayers)
-                    if (p.team == Team.Red)
+                {
+                    if (!foundRed && p.team == Team.Red) 
+                    {
+                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
+                        psd.color = Color.red;
+                        psd.text.color = Color.red;
+                        redTeamScoreDisplay = psd;
                         psd.player = p;
-
-                playerScoreDisplays.Add(psd);
-
-                psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                psd.color = Color.blue;
-                psd.text.color = Color.blue;
-                blueTeamScoreDisplay = psd;
-                foreach (var p in activePlayers)
-                    if (p.team == Team.Blue)
+                        playerScoreDisplays.Add(psd);
+                        foundRed = true;
+                    }
+                    if (!foundGreen && p.team == Team.Green) 
+                    {
+                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
+                        psd.color = Color.green;
+                        psd.text.color = Color.green;
+                        greenTeamScoreDisplay = psd;
                         psd.player = p;
-                playerScoreDisplays.Add(psd);
-
-                psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                psd.color = Color.green;
-                psd.text.color = Color.green;
-                greenTeamScoreDisplay = psd;
-                foreach (var p in activePlayers)
-                    if (p.team == Team.Green)
+                        playerScoreDisplays.Add(psd);
+                        foundGreen = true;
+                    }
+                    if (!foundBlue && p.team == Team.Blue) 
+                    {
+                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
+                        psd.color = Color.blue;
+                        psd.text.color = Color.blue;
+                        blueTeamScoreDisplay = psd;
                         psd.player = p;
-                playerScoreDisplays.Add(psd);
-
-
+                        playerScoreDisplays.Add(psd);
+                        foundBlue = true;
+                    }
+                }
             }
             else
             {
@@ -575,9 +583,18 @@ public class GameController : MonoBehaviour
     {
         if (GameController.isTeamMode)
         {
-            redTeamScoreDisplay.player.score = redTeamScore;
-            blueTeamScoreDisplay.player.score = blueTeamScore;
-            greenTeamScoreDisplay.player.score = greenTeamScore;
+            if (redTeamScoreDisplay != null && redTeamScoreDisplay.player != null) 
+            {
+                redTeamScoreDisplay.player.score = redTeamScore;
+            }
+            if (greenTeamScoreDisplay != null && greenTeamScoreDisplay.player != null) 
+            {
+                greenTeamScoreDisplay.player.score = greenTeamScore;
+            }
+            if (blueTeamScoreDisplay != null && blueTeamScoreDisplay.player != null) 
+            {
+                blueTeamScoreDisplay.player.score = blueTeamScore;
+            }
         }
         instance.playerScoreDisplays.Sort((x, y) => (y.player.score * 100 + y.player.sortPriority) - (x.player.score * 100 + x.player.sortPriority));
     }
@@ -611,16 +628,31 @@ public class GameController : MonoBehaviour
             }
             else if (isTeamMode)
             {
-                bool winnersContainRed = false;
-                bool winnersContainBlue = false;
+                int totalWinningTeams = 0;
+                bool foundRedPlayer = false;
+                bool foundGreenPlayer = false;
+                bool foundBluePlayer = false;
                 foreach (var player in activePlayers)
                 {
-                    if (player.team == Team.Red)
-                        winnersContainRed = true;
-                    else winnersContainBlue = true;
+                    if (!foundRedPlayer && player.team == Team.Red)
+                    {
+                        foundRedPlayer = true;
+                        totalWinningTeams++;
+                    }
+                    else if (!foundGreenPlayer && player.team == Team.Green)
+                    {
+                        foundGreenPlayer = true;
+                        totalWinningTeams++;
+                    }
+                    else if (!foundBluePlayer && player.team == Team.Blue)
+                    {
+                        foundBluePlayer = true;
+                        totalWinningTeams++;
+                    }
                 }
 
-                if (!winnersContainBlue || !winnersContainRed)
+                // Just in case everyone is dead, not sure if that is even possible
+                if (totalWinningTeams < 2)
                 {
                     wonRound = true;
                     var winner = activePlayers[0];
