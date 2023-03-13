@@ -26,6 +26,9 @@ public class GameController : MonoBehaviour
     public static bool punishSelfDeath = false;
     public static bool allowCustomScoreToWin = false;
     public static float customScoreToWin = 10f;
+    public static bool enableFly = true;
+    public static float minTimeForFlySpawn = 15f;
+    public static float maxTimeForFlySpawn = 45f;
 
     public static List<Player> activePlayers = new List<Player>();
 
@@ -283,7 +286,7 @@ public class GameController : MonoBehaviour
         }
         else if (state == GameState.Playing)
         {
-            if (activeFly == null && !isShowDown)
+            if (enableFly && activeFly == null && !isShowDown)
             {
                 if (flySpawnDelay > 0f)
                 {
@@ -293,7 +296,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    flySpawnDelay = UnityEngine.Random.Range(15f, 45f);
+                    flySpawnDelay = UnityEngine.Random.Range(minTimeForFlySpawn, maxTimeForFlySpawn);
                 }
 
 
@@ -790,6 +793,11 @@ public class GameController : MonoBehaviour
             allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
             customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
             GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
+            enableFly = GUILayout.Toggle(enableFly, "Enable Fly");
+            minTimeForFlySpawn = GUILayout.HorizontalScrollbar(minTimeForFlySpawn, 1f, 1f, 100f);
+            GUILayout.Label($"Minimum Seconds For Fly Spawn is {(int)minTimeForFlySpawn}");
+            maxTimeForFlySpawn = GUILayout.HorizontalScrollbar(maxTimeForFlySpawn, 1f, 1f, 100f);
+            GUILayout.Label($"Maximum Seconds For Fly Spawn is {(int)maxTimeForFlySpawn}");
             GUILayout.EndArea();
         }
     }
