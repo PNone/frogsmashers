@@ -79,14 +79,14 @@ public class IntroAnimController : MonoBehaviour
         InputReader.GetInput(input);
         if (cameraPosM == 1f)
         {
-            if (Input.GetKeyDown(KeyCode.JoystickButton7)) // Start button
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.JoystickButton7)) // Start button
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene("JoinScreen");
             }
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.JoystickButton7)) // Start button
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.JoystickButton7)) // Start button
             {
                 animator.CrossFade(animator.GetCurrentAnimatorStateInfo(-1).shortNameHash, 0f, 0, 0.95f);
                 cameraPanning = true;
@@ -123,6 +123,11 @@ public class IntroAnimController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             ShakeBackground();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
 

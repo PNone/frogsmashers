@@ -36,5 +36,9 @@ public class OutroAnimController : MonoBehaviour
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene("TitleScreen");
             }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
     }
 }

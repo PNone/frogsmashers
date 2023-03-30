@@ -27,6 +27,9 @@ public class GameController : MonoBehaviour
     public static bool addPodium3 = false;
     public static bool allowCustomScoreToWin = false;
     public static float customScoreToWin = 10f;
+    public static bool enableFly = true;
+    public static float minTimeForFlySpawn = 15f;
+    public static float maxTimeForFlySpawn = 45f;
 
     public static List<Player> activePlayers = new List<Player>();
 
@@ -74,8 +77,8 @@ public class GameController : MonoBehaviour
 
     public static bool isShowDown;
 
-    int redTeamScore, blueTeamScore;
-    PlayerScoreDisplay redTeamScoreDisplay, blueTeamScoreDisplay;
+    int redTeamScore, blueTeamScore, greenTeamScore;
+    PlayerScoreDisplay redTeamScoreDisplay, blueTeamScoreDisplay, greenTeamScoreDisplay;
 
     void Awake()
     {
@@ -134,25 +137,43 @@ public class GameController : MonoBehaviour
                 }
 
 
+                bool foundRed = false;
+                bool foundGreen = false;
+                bool foundBlue = false;
                 var psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                psd.color = Color.red;
-                psd.text.color = Color.red;
-                redTeamScoreDisplay = psd;
                 foreach (var p in activePlayers)
-                    if (p.team == Team.Red)
+                {
+                    if (!foundRed && p.team == Team.Red) 
+                    {
+                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
+                        psd.color = Color.red;
+                        psd.text.color = Color.red;
+                        redTeamScoreDisplay = psd;
                         psd.player = p;
-
-                playerScoreDisplays.Add(psd);
-
-                psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                psd.color = Color.blue;
-                psd.text.color = Color.blue;
-                blueTeamScoreDisplay = psd;
-                foreach (var p in activePlayers)
-                    if (p.team == Team.Blue)
+                        playerScoreDisplays.Add(psd);
+                        foundRed = true;
+                    }
+                    if (!foundGreen && p.team == Team.Green) 
+                    {
+                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
+                        psd.color = Color.green;
+                        psd.text.color = Color.green;
+                        greenTeamScoreDisplay = psd;
                         psd.player = p;
-                playerScoreDisplays.Add(psd);
-
+                        playerScoreDisplays.Add(psd);
+                        foundGreen = true;
+                    }
+                    if (!foundBlue && p.team == Team.Blue) 
+                    {
+                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
+                        psd.color = Color.blue;
+                        psd.text.color = Color.blue;
+                        blueTeamScoreDisplay = psd;
+                        psd.player = p;
+                        playerScoreDisplays.Add(psd);
+                        foundBlue = true;
+                    }
+                }
             }
             else
             {
@@ -266,7 +287,7 @@ public class GameController : MonoBehaviour
         }
         else if (state == GameState.Playing)
         {
-            if (activeFly == null && !isShowDown)
+            if (enableFly && activeFly == null && !isShowDown)
             {
                 if (flySpawnDelay > 0f)
                 {
@@ -276,7 +297,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    flySpawnDelay = UnityEngine.Random.Range(15f, 45f);
+                    flySpawnDelay = UnityEngine.Random.Range(minTimeForFlySpawn, maxTimeForFlySpawn);
                 }
 
 
@@ -403,7 +424,8 @@ public class GameController : MonoBehaviour
         int readyPlayers = 0;
         if (GameController.isTeamMode)
         {
-            bool redTeamHasPlayer = false, blueTeamHasPlayer = false;
+            bool redTeamHasPlayer = false, greenTeamHasPlayer = false, blueTeamHasPlayer = false;
+            int totalTeamsWithPlayers = 0;
             for (int i = 0; i < joinCanvas.Length; i++)
             {
                 if (joinCanvas[i].HasAssignedPlayer())
@@ -411,10 +433,21 @@ public class GameController : MonoBehaviour
                     if (joinCanvas[i].state == JoinCanvas.State.Ready)
                     {
                         readyPlayers++;
-                        if (joinCanvas[i].assignedPlayer.team == Team.Blue)
+                        if (joinCanvas[i].assignedPlayer.team == Team.Blue && !blueTeamHasPlayer)
+                        {
+                            totalTeamsWithPlayers++;
                             blueTeamHasPlayer = true;
-                        else if (joinCanvas[i].assignedPlayer.team == Team.Red)
+                        }
+                        else if (joinCanvas[i].assignedPlayer.team == Team.Red && !redTeamHasPlayer)
+                        {
+                            totalTeamsWithPlayers++;
                             redTeamHasPlayer = true;
+                        }
+                        else if (joinCanvas[i].assignedPlayer.team == Team.Green && !greenTeamHasPlayer)
+                        {
+                            totalTeamsWithPlayers++;
+                            greenTeamHasPlayer = true;
+                        }
                     }
                     else
                     {
@@ -423,7 +456,7 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            return redTeamHasPlayer && blueTeamHasPlayer && readyPlayers >= 2;
+            return totalTeamsWithPlayers >= 2 && readyPlayers >= 2;
         }
         else
         {
@@ -556,8 +589,18 @@ public class GameController : MonoBehaviour
     {
         if (GameController.isTeamMode)
         {
-            redTeamScoreDisplay.player.score = redTeamScore;
-            blueTeamScoreDisplay.player.score = blueTeamScore;
+            if (redTeamScoreDisplay != null && redTeamScoreDisplay.player != null) 
+            {
+                redTeamScoreDisplay.player.score = redTeamScore;
+            }
+            if (greenTeamScoreDisplay != null && greenTeamScoreDisplay.player != null) 
+            {
+                greenTeamScoreDisplay.player.score = greenTeamScore;
+            }
+            if (blueTeamScoreDisplay != null && blueTeamScoreDisplay.player != null) 
+            {
+                blueTeamScoreDisplay.player.score = blueTeamScore;
+            }
         }
         instance.playerScoreDisplays.Sort((x, y) => (y.player.score * 100 + y.player.sortPriority) - (x.player.score * 100 + x.player.sortPriority));
     }
@@ -591,16 +634,31 @@ public class GameController : MonoBehaviour
             }
             else if (isTeamMode)
             {
-                bool winnersContainRed = false;
-                bool winnersContainBlue = false;
+                int totalWinningTeams = 0;
+                bool foundRedPlayer = false;
+                bool foundGreenPlayer = false;
+                bool foundBluePlayer = false;
                 foreach (var player in activePlayers)
                 {
-                    if (player.team == Team.Red)
-                        winnersContainRed = true;
-                    else winnersContainBlue = true;
+                    if (!foundRedPlayer && player.team == Team.Red)
+                    {
+                        foundRedPlayer = true;
+                        totalWinningTeams++;
+                    }
+                    else if (!foundGreenPlayer && player.team == Team.Green)
+                    {
+                        foundGreenPlayer = true;
+                        totalWinningTeams++;
+                    }
+                    else if (!foundBluePlayer && player.team == Team.Blue)
+                    {
+                        foundBluePlayer = true;
+                        totalWinningTeams++;
+                    }
                 }
 
-                if (!winnersContainBlue || !winnersContainRed)
+                // Just in case everyone is dead, not sure if that is even possible
+                if (totalWinningTeams < 2)
                 {
                     wonRound = true;
                     var winner = activePlayers[0];
@@ -630,6 +688,8 @@ public class GameController : MonoBehaviour
             {
                 if (gotPoint.team == Team.Blue)
                     instance.blueTeamScore += hits;
+                else if (gotPoint.team == Team.Green)
+                    instance.greenTeamScore += hits;
                 else
                     instance.redTeamScore += hits;
             }
@@ -643,7 +703,8 @@ public class GameController : MonoBehaviour
             {
                 bool redWon = allowCustomScoreToWin ? instance.redTeamScore >= (int)customScoreToWin : instance.redTeamScore >= 10;
                 bool blueWon = allowCustomScoreToWin ? instance.blueTeamScore >= (int)customScoreToWin : instance.blueTeamScore >= 10;
-                wonRound = ((gotPoint.team == Team.Red && redWon) || (gotPoint.team == Team.Blue && blueWon));
+                bool greenWon = allowCustomScoreToWin ? instance.greenTeamScore >= (int)customScoreToWin : instance.greenTeamScore >= 10;
+                wonRound = ((gotPoint.team == Team.Red && redWon) || (gotPoint.team == Team.Blue && blueWon) || (gotPoint.team == Team.Green && greenWon));
             }
             else
             { 
@@ -682,6 +743,8 @@ public class GameController : MonoBehaviour
             {
                if (gotKilled.team == Team.Blue)
                    instance.blueTeamScore--;
+               else if (gotKilled.team == Team.Green)
+                   instance.greenTeamScore--;
                else
                    instance.redTeamScore--;
             }
@@ -703,6 +766,8 @@ public class GameController : MonoBehaviour
         {
             if (player.team == Team.Red)
                 return redTeamScoreDisplay;
+            else if (player.team == Team.Green)
+                return greenTeamScoreDisplay;
             else
                 return blueTeamScoreDisplay;
         }
@@ -735,6 +800,11 @@ public class GameController : MonoBehaviour
             allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
             customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
             GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
+            enableFly = GUILayout.Toggle(enableFly, "Enable Fly");
+            minTimeForFlySpawn = GUILayout.HorizontalScrollbar(minTimeForFlySpawn, 1f, 1f, 100f);
+            GUILayout.Label($"Minimum Seconds For Fly Spawn is {(int)minTimeForFlySpawn}");
+            maxTimeForFlySpawn = GUILayout.HorizontalScrollbar(maxTimeForFlySpawn, 1f, 1f, 100f);
+            GUILayout.Label($"Maximum Seconds For Fly Spawn is {(int)maxTimeForFlySpawn}");
             GUILayout.EndArea();
         }
     }
@@ -799,15 +869,28 @@ public class GameController : MonoBehaviour
         }
         if (GameController.isTeamMode)
         {
-            bool redIsTied = false, blueIsTied = false;
+            int tiedTeams = 0;
+            bool redIsTied = false, greenIsTied = false, blueIsTied = false;
             foreach (var p in tiedPlayers)
             {
-                if (p.team == Team.Red)
+                if (p.team == Team.Red && !redIsTied)
+                {
+                    tiedTeams++;
                     redIsTied = true;
-                if (p.team == Team.Blue)
+                }
+                if (p.team == Team.Green && !greenIsTied)
+                {
+                    tiedTeams++;
+                    greenIsTied = true;
+                }
+                if (p.team == Team.Blue && !blueIsTied)
+                {
+                    tiedTeams++;
                     blueIsTied = true;
+                }
             }
-            return redIsTied && blueIsTied;
+            // At least 2 teams have the same score
+            return tiedTeams > 1;
         }
         else
             return tiedPlayers.Count > 1;

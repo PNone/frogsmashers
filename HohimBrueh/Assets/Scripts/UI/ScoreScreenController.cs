@@ -24,6 +24,7 @@ public class ScoreScreenController : MonoBehaviour
 
     PlayerScoreDisplay redScoreDisplay;
     PlayerScoreDisplay blueScoreDisplay;
+    PlayerScoreDisplay greenScoreDisplay;
 
     float updateScoresDelay = 1f;
     float continueDelay = 5f;
@@ -39,7 +40,7 @@ public class ScoreScreenController : MonoBehaviour
 
         foreach (var player in GameController.activePlayers)
         {
-            if (!GameController.isTeamMode || (player.team == Team.Red && redScoreDisplay == null) || (player.team == Team.Blue && blueScoreDisplay == null))
+            if (!GameController.isTeamMode || (player.team == Team.Red && redScoreDisplay == null) || (player.team == Team.Blue && blueScoreDisplay == null) || (player.team == Team.Green && greenScoreDisplay == null))
             {
                 var psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
                 psd.player = player;
@@ -54,6 +55,10 @@ public class ScoreScreenController : MonoBehaviour
                     if (player.team == Team.Red)
                     {
                         redScoreDisplay = psd;
+                    }
+                    else if (player.team == Team.Green)
+                    {
+                        greenScoreDisplay = psd;
                     }
                     else
                     {
@@ -191,6 +196,9 @@ public class ScoreScreenController : MonoBehaviour
                 UnityEngine.SceneManagement.SceneManager.LoadScene(GameController.levelNames[GameController.levelNo]);
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 }
