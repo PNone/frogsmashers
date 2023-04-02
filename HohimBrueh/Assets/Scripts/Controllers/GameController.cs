@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
     public static bool randomizeMaps = false;
     public static bool winnerTakesAll = true;
     public static bool punishSelfDeath = false;
+    public static bool addPodium3 = false;
     public static bool allowCustomScoreToWin = false;
     public static float customScoreToWin = 10f;
     public static bool enableFly = true;
@@ -502,14 +503,19 @@ public class GameController : MonoBehaviour
                     activePlayers.Add(jc.assignedPlayer);
 
             }
+            var mapsToUse = originalLevelNames.ToList();
+            if (addPodium3)
+            {
+                mapsToUse.Add("3Podium");
+            }
             if (randomizeMaps)
             {
                 System.Random random = new System.Random();
-                levelNames = originalLevelNames.OrderBy(x => random.Next()).ToArray();
+                levelNames = mapsToUse.OrderBy(x => random.Next()).ToArray();
             }
             else 
             {
-                levelNames = originalLevelNames.ToArray();
+                levelNames = mapsToUse.ToArray();
             }
             
             SceneManager.LoadScene(levelNames[0]);
@@ -790,6 +796,7 @@ public class GameController : MonoBehaviour
             randomizeMaps = GUILayout.Toggle(randomizeMaps, "Randomize Map Order");
             winnerTakesAll = GUILayout.Toggle(winnerTakesAll, "Only Winners Get Points");
             punishSelfDeath = GUILayout.Toggle(punishSelfDeath, "Self-Kills Lose Points");
+            addPodium3 = GUILayout.Toggle(addPodium3, "Add Podium3 To Maps");
             allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
             customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
             GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
