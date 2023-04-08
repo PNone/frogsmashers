@@ -3,8 +3,11 @@ name: Frog Smashers Unity Actions
 
 
 on:
-  pull_request: {}
-  push: {}
+  # pull_request: {}
+  # push: {}
+  push:
+    branches:
+      - master
 # on:
 #   push:
 #     tags:
