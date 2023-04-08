@@ -21,10 +21,7 @@ public class ScoreScreenController : MonoBehaviour
 
 
     List<PlayerScoreDisplay> playerScoreDisplays;
-
-    PlayerScoreDisplay redScoreDisplay;
-    PlayerScoreDisplay blueScoreDisplay;
-    PlayerScoreDisplay greenScoreDisplay;
+    public Dictionary<Team, PlayerScoreDisplay> teamScoreDisplays;
 
     float updateScoresDelay = 1f;
     float continueDelay = 5f;
@@ -32,15 +29,18 @@ public class ScoreScreenController : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        roundText.text = "ROUND " + GameController.levelNo + " OF " + GameController.levelNames.Length;
+        roundText.text = $"ROUND {GameController.levelNo} OF {GameController.levelNames.Length}";
         playerScoreDisplays = new List<PlayerScoreDisplay>();
+        teamScoreDisplays = new Dictionary<Team, PlayerScoreDisplay>();
 
         if (GameController.isShowDown)
+        {
             updateScoresDelay = 0.05f;
+        }
 
         foreach (var player in GameController.activePlayers)
         {
-            if (!GameController.isTeamMode || (player.team == Team.Red && redScoreDisplay == null) || (player.team == Team.Blue && blueScoreDisplay == null) || (player.team == Team.Green && greenScoreDisplay == null))
+            if (!GameController.isTeamMode || !teamScoreDisplays.ContainsKey(player.team))
             {
                 var psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
                 psd.player = player;
@@ -52,18 +52,7 @@ public class ScoreScreenController : MonoBehaviour
                 psd.useRoundWins = true;
                 if (GameController.isTeamMode)
                 {
-                    if (player.team == Team.Red)
-                    {
-                        redScoreDisplay = psd;
-                    }
-                    else if (player.team == Team.Green)
-                    {
-                        greenScoreDisplay = psd;
-                    }
-                    else
-                    {
-                        blueScoreDisplay = psd;
-                    }
+                    teamScoreDisplays[player.team] = psd;
                 }
             }
         }
@@ -85,9 +74,13 @@ public class ScoreScreenController : MonoBehaviour
         {
             var p = playerScoreDisplays[i].transform.localPosition;
             if (instant)
+            {
                 p.y = Mathf.Lerp(p.y, i * -2f, 1f);
+            }
             else
+            {
                 p.y = Mathf.Lerp(p.y, i * -2f, Time.deltaTime * 3f);
+            }
             p.z = 0f;
             playerScoreDisplays[i].transform.localPosition = p;
         }
@@ -141,9 +134,13 @@ public class ScoreScreenController : MonoBehaviour
                     if (psd.player.team == GameController.lastWinningPlayer.team)
                     {
                         if (GameController.isShowDown)
+                        {
                             psd.TemorarilyDisplay("WINNER!", 10f);
+                        }
                         else
+                        {
                             psd.TemorarilyDisplay(psd.player.roundWins.ToString());
+                        }
                     }
                 }
                 else
@@ -155,9 +152,13 @@ public class ScoreScreenController : MonoBehaviour
                             psd.player.roundWins++;
                         }
                         if (GameController.isShowDown)
+                        {
                             psd.TemorarilyDisplay("WINNER!", 10f);
+                        }
                         else
+                        {
                             psd.TemorarilyDisplay(psd.player.roundWins.ToString());
+                        }
                     }
                 }
             }

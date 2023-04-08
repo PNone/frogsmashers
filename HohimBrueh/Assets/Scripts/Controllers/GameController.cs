@@ -77,8 +77,9 @@ public class GameController : MonoBehaviour
 
     public static bool isShowDown;
 
-    int redTeamScore, blueTeamScore, greenTeamScore;
-    PlayerScoreDisplay redTeamScoreDisplay, blueTeamScoreDisplay, greenTeamScoreDisplay;
+    public Dictionary<Team, PlayerScoreDisplay> teamScoreDisplays;
+    public Dictionary<Team, int> teamScores;
+    public static Dictionary<Team, Color> colorPerTeam = new Dictionary<Team, Color>{ { Team.Red, Color.red }, { Team.Green, Color.green }, { Team.Blue, Color.blue } };
 
     void Awake()
     {
@@ -97,6 +98,8 @@ public class GameController : MonoBehaviour
 
         }
         playerScoreDisplays = new List<PlayerScoreDisplay>();
+        teamScoreDisplays = new Dictionary<Team, PlayerScoreDisplay>();
+        teamScores = new Dictionary<Team, int>();
         instance = this;
         if (inactivePlayers == null)
         {
@@ -135,43 +138,19 @@ public class GameController : MonoBehaviour
                     player.spawnDelay = 0.5f + 0.2f * i;
                     i++;
                 }
-
-
-                bool foundRed = false;
-                bool foundGreen = false;
-                bool foundBlue = false;
                 var psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
                 foreach (var p in activePlayers)
                 {
-                    if (!foundRed && p.team == Team.Red) 
+                    if (!teamScoreDisplays.ContainsKey(p.team)) 
                     {
                         psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                        psd.color = Color.red;
-                        psd.text.color = Color.red;
-                        redTeamScoreDisplay = psd;
+                        var colorForPsd = colorPerTeam[p.team];
+                        psd.color = colorForPsd;
+                        psd.text.color = colorForPsd;
+                        teamScoreDisplays[p.team] = psd;
+                        teamScores[p.team] = 0;
                         psd.player = p;
                         playerScoreDisplays.Add(psd);
-                        foundRed = true;
-                    }
-                    if (!foundGreen && p.team == Team.Green) 
-                    {
-                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                        psd.color = Color.green;
-                        psd.text.color = Color.green;
-                        greenTeamScoreDisplay = psd;
-                        psd.player = p;
-                        playerScoreDisplays.Add(psd);
-                        foundGreen = true;
-                    }
-                    if (!foundBlue && p.team == Team.Blue) 
-                    {
-                        psd = Instantiate(scoreDisplayPrefab, scoreCanvas.transform) as PlayerScoreDisplay;
-                        psd.color = Color.blue;
-                        psd.text.color = Color.blue;
-                        blueTeamScoreDisplay = psd;
-                        psd.player = p;
-                        playerScoreDisplays.Add(psd);
-                        foundBlue = true;
                     }
                 }
             }
@@ -424,30 +403,16 @@ public class GameController : MonoBehaviour
         int readyPlayers = 0;
         if (GameController.isTeamMode)
         {
-            bool redTeamHasPlayer = false, greenTeamHasPlayer = false, blueTeamHasPlayer = false;
-            int totalTeamsWithPlayers = 0;
+            Dictionary<Team, bool> teamsWithPlayers = new Dictionary<Team, bool>();
             for (int i = 0; i < joinCanvas.Length; i++)
             {
                 if (joinCanvas[i].HasAssignedPlayer())
                 {
                     if (joinCanvas[i].state == JoinCanvas.State.Ready)
                     {
+                        Team assignedPlayerTeam = joinCanvas[i].assignedPlayer.team;
+                        teamsWithPlayers[assignedPlayerTeam] = true;
                         readyPlayers++;
-                        if (joinCanvas[i].assignedPlayer.team == Team.Blue && !blueTeamHasPlayer)
-                        {
-                            totalTeamsWithPlayers++;
-                            blueTeamHasPlayer = true;
-                        }
-                        else if (joinCanvas[i].assignedPlayer.team == Team.Red && !redTeamHasPlayer)
-                        {
-                            totalTeamsWithPlayers++;
-                            redTeamHasPlayer = true;
-                        }
-                        else if (joinCanvas[i].assignedPlayer.team == Team.Green && !greenTeamHasPlayer)
-                        {
-                            totalTeamsWithPlayers++;
-                            greenTeamHasPlayer = true;
-                        }
                     }
                     else
                     {
@@ -456,7 +421,7 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            return totalTeamsWithPlayers >= 2 && readyPlayers >= 2;
+            return teamsWithPlayers.Count >= 2 && readyPlayers >= 2;
         }
         else
         {
@@ -589,17 +554,11 @@ public class GameController : MonoBehaviour
     {
         if (GameController.isTeamMode)
         {
-            if (redTeamScoreDisplay != null && redTeamScoreDisplay.player != null) 
+            foreach (var teamAndScore in teamScoreDisplays)
             {
-                redTeamScoreDisplay.player.score = redTeamScore;
-            }
-            if (greenTeamScoreDisplay != null && greenTeamScoreDisplay.player != null) 
-            {
-                greenTeamScoreDisplay.player.score = greenTeamScore;
-            }
-            if (blueTeamScoreDisplay != null && blueTeamScoreDisplay.player != null) 
-            {
-                blueTeamScoreDisplay.player.score = blueTeamScore;
+                var teamScoreDisplay = teamAndScore.Value;
+                Team team = teamAndScore.Key;
+                teamScoreDisplay.player.score = teamScores[team];
             }
         }
         instance.playerScoreDisplays.Sort((x, y) => (y.player.score * 100 + y.player.sortPriority) - (x.player.score * 100 + x.player.sortPriority));
@@ -612,7 +571,9 @@ public class GameController : MonoBehaviour
 
 
         if (State == GameState.RoundFinished)
+        {
             return;
+        }
 
         if (isShowDown)
         {
@@ -621,49 +582,38 @@ public class GameController : MonoBehaviour
             {
                 activePlayers.Remove(gotKilled);
                 if (gotKilled.offscreenDot != null)
+                {
                     GameObject.Destroy(gotKilled.offscreenDot);
+                }
             }
             if (activePlayers.Count == 1)
             {
                 wonRound = true;
                 var winner = activePlayers[0];
                 if (winner.character != null)
+                {
                     winner.character.GetComponent<ScorePlum>().ShowText("WIN!", 5f);
+                }
                 instance.winningPlayer = winner;
                 lastWinningPlayer = winner;
             }
             else if (isTeamMode)
             {
-                int totalWinningTeams = 0;
-                bool foundRedPlayer = false;
-                bool foundGreenPlayer = false;
-                bool foundBluePlayer = false;
+                Dictionary<Team, bool> teamsWithLivingPlayers = new Dictionary<Team, bool>();
                 foreach (var player in activePlayers)
                 {
-                    if (!foundRedPlayer && player.team == Team.Red)
-                    {
-                        foundRedPlayer = true;
-                        totalWinningTeams++;
-                    }
-                    else if (!foundGreenPlayer && player.team == Team.Green)
-                    {
-                        foundGreenPlayer = true;
-                        totalWinningTeams++;
-                    }
-                    else if (!foundBluePlayer && player.team == Team.Blue)
-                    {
-                        foundBluePlayer = true;
-                        totalWinningTeams++;
-                    }
+                    teamsWithLivingPlayers[player.team] = true;
                 }
 
                 // Just in case everyone is dead, not sure if that is even possible
-                if (totalWinningTeams < 2)
+                if (teamsWithLivingPlayers.Count < 2)
                 {
                     wonRound = true;
                     var winner = activePlayers[0];
                     if (winner.character != null)
+                    {
                         winner.character.GetComponent<ScorePlum>().ShowText("WIN!", 5f);
+                    }
                     instance.winningPlayer = winner;
                     lastWinningPlayer = winner;
                 }
@@ -682,16 +632,13 @@ public class GameController : MonoBehaviour
         if (gotPoint != null)
         {
             if (hits <= 0)
+            {
                 hits = 1;
+            }
 
             if (GameController.isTeamMode)
             {
-                if (gotPoint.team == Team.Blue)
-                    instance.blueTeamScore += hits;
-                else if (gotPoint.team == Team.Green)
-                    instance.greenTeamScore += hits;
-                else
-                    instance.redTeamScore += hits;
+                instance.teamScores[gotPoint.team] += hits;
             }
             else
             {
@@ -701,19 +648,32 @@ public class GameController : MonoBehaviour
             bool wonRound = false;
             if (GameController.isTeamMode)
             {
-                bool redWon = allowCustomScoreToWin ? instance.redTeamScore >= (int)customScoreToWin : instance.redTeamScore >= 10;
-                bool blueWon = allowCustomScoreToWin ? instance.blueTeamScore >= (int)customScoreToWin : instance.blueTeamScore >= 10;
-                bool greenWon = allowCustomScoreToWin ? instance.greenTeamScore >= (int)customScoreToWin : instance.greenTeamScore >= 10;
-                wonRound = ((gotPoint.team == Team.Red && redWon) || (gotPoint.team == Team.Blue && blueWon) || (gotPoint.team == Team.Green && greenWon));
+                int requiredScoreToWin = allowCustomScoreToWin ? (int)customScoreToWin : 10;
+                foreach (var teamAndScore in instance.teamScores)
+                {
+                    int scoreOfTeam = teamAndScore.Value;
+                    Team currentTeam = teamAndScore.Key;
+                    if (gotPoint.team == currentTeam && scoreOfTeam >= requiredScoreToWin)
+                    {
+                        wonRound = true;
+                        break;
+                    }
+                }
             }
             else
             { 
                 if (allowCustomScoreToWin)
+                {
                     wonRound = gotPoint.score >= (int)customScoreToWin;
+                }
                 else if (activePlayers.Count == 2)
+                {
                     wonRound = gotPoint.score >= 5;
+                }
                 else
+                {
                     wonRound = gotPoint.score >= 10;
+                }
             }
             if (wonRound)
             {
@@ -722,7 +682,9 @@ public class GameController : MonoBehaviour
                 instance.state = GameState.RoundFinished;
                 instance.GetPlayerScoreDisplay(gotPoint).TemorarilyDisplay("WINNER ! ! !", 5f);
                 if (gotPoint.character != null)
+                {
                     gotPoint.character.GetComponent<ScorePlum>().ShowText("WIN!", 5f);
+                }
                 instance.winningPlayer = gotPoint;
                 lastWinningPlayer = gotPoint;
             }
@@ -730,7 +692,9 @@ public class GameController : MonoBehaviour
             {
                 instance.GetPlayerScoreDisplay(gotPoint).TemorarilyDisplay("+" + hits.ToString());
                 if (gotPoint.character != null)
+                {
                     gotPoint.character.GetComponent<ScorePlum>().ShowText("+" + hits.ToString());
+                }
             }
 
 
@@ -741,12 +705,7 @@ public class GameController : MonoBehaviour
         {
             if (isTeamMode)
             {
-               if (gotKilled.team == Team.Blue)
-                   instance.blueTeamScore--;
-               else if (gotKilled.team == Team.Green)
-                   instance.greenTeamScore--;
-               else
-                   instance.redTeamScore--;
+                instance.teamScores[gotKilled.team]--;
             }
             else
             {
@@ -764,19 +723,16 @@ public class GameController : MonoBehaviour
     {
         if (isTeamMode)
         {
-            if (player.team == Team.Red)
-                return redTeamScoreDisplay;
-            else if (player.team == Team.Green)
-                return greenTeamScoreDisplay;
-            else
-                return blueTeamScoreDisplay;
+            return teamScoreDisplays[player.team];
         }
         else
         {
             for (int i = 0; i < playerScoreDisplays.Count; i++)
             {
                 if (playerScoreDisplays[i].player == player)
+                {
                     return playerScoreDisplays[i];
+                }
             }
         }
         return null;
@@ -869,28 +825,13 @@ public class GameController : MonoBehaviour
         }
         if (GameController.isTeamMode)
         {
-            int tiedTeams = 0;
-            bool redIsTied = false, greenIsTied = false, blueIsTied = false;
-            foreach (var p in tiedPlayers)
+            Dictionary<Team, bool> teamsWithTiedPlayers = new Dictionary<Team, bool>();
+            foreach (var player in tiedPlayers)
             {
-                if (p.team == Team.Red && !redIsTied)
-                {
-                    tiedTeams++;
-                    redIsTied = true;
-                }
-                if (p.team == Team.Green && !greenIsTied)
-                {
-                    tiedTeams++;
-                    greenIsTied = true;
-                }
-                if (p.team == Team.Blue && !blueIsTied)
-                {
-                    tiedTeams++;
-                    blueIsTied = true;
-                }
+                teamsWithTiedPlayers[player.team] = true;
             }
             // At least 2 teams have the same score
-            return tiedTeams > 1;
+            return teamsWithTiedPlayers.Count > 1;
         }
         else
             return tiedPlayers.Count > 1;
