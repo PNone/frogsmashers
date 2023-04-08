@@ -6,7 +6,8 @@ public enum Team
 {
     Blue,
     Red,
-    Green
+    Green,
+    Yellow
 }
 
 public class Player
