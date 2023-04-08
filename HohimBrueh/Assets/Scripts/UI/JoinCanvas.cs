@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,48 +56,29 @@ public class JoinCanvas : MonoBehaviour
             {
                 if (input.bButton && !input.wasBButton)
                 {
-                    if (assignedPlayer.team == Team.Red)
-                        assignedPlayer.team = Team.Green;
-                    else if (assignedPlayer.team == Team.Green)
-                        assignedPlayer.team = Team.Blue;
-                    else assignedPlayer.team = Team.Red;
-
+                    List<Team> possibleTeams = GameController.colorPerTeam.Keys.ToList();
+                    int indexOfCurrentTeam = possibleTeams.IndexOf(assignedPlayer.team);
+                    if (indexOfCurrentTeam == -1)
+                    {
+                        indexOfCurrentTeam = 0;
+                    }
+                    assignedPlayer.team = possibleTeams[(indexOfCurrentTeam + 1) % GameController.colorPerTeam.Count];
 
                     colorLerpAmount = Random.Range(0f, 0.7f);
-
-                    if (assignedPlayer.team == Team.Red)
-                    {
-                        color = assignedPlayer.color = Color.Lerp(Color.red, Color.white, colorLerpAmount);
-                    }
-                    else if (assignedPlayer.team == Team.Green)
-                    {
-                        color = assignedPlayer.color = Color.Lerp(Color.green, Color.white, colorLerpAmount);
-                    }
-                    else
-                    {
-                        color = assignedPlayer.color = Color.Lerp(Color.blue, Color.white, colorLerpAmount);
-                    }
-
+                    color = assignedPlayer.color = Color.Lerp(GameController.colorPerTeam[assignedPlayer.team], Color.white, colorLerpAmount);
                     frogImage.color = color;
                     EffectsController.CreateSpawnEffects(effectPos.position, color);
                     SoundController.PlaySoundEffect("CharacterSpawn", 0.3f, effectPos.position);
                 }
                 if (input.left)
+                {
                     colorLerpAmount = Mathf.MoveTowards(colorLerpAmount, 0f, Time.deltaTime * 0.5f);
+                }
                 else if (input.right)
+                {
                     colorLerpAmount = Mathf.MoveTowards(colorLerpAmount, 0.7f, Time.deltaTime * 0.5f);
-                
-                var leftArgOfLerp = Color.red;
-                if (assignedPlayer.team == Team.Green) 
-                {
-                    leftArgOfLerp = Color.green;
                 }
-                else if (assignedPlayer.team == Team.Blue) 
-                {
-                    leftArgOfLerp = Color.blue;
-                }
-                
-                color = assignedPlayer.color = frogImage.color = Color.Lerp(leftArgOfLerp, Color.white, colorLerpAmount);
+                color = assignedPlayer.color = frogImage.color = Color.Lerp(GameController.colorPerTeam[assignedPlayer.team], Color.white, colorLerpAmount);
 
 
             }
@@ -150,33 +132,12 @@ public class JoinCanvas : MonoBehaviour
             changeColorText.text = "CHANGE TEAM";
 
 
-            var randomTeamResult = Team.Red;
-            var randomFloat = Random.value;
-            if (randomFloat < 0.34f) 
-            {
-                randomTeamResult = Team.Red;
-            }
-            else if (randomFloat > 0.33f && randomFloat < 0.67f) 
-            {
-                randomTeamResult = Team.Green;
-            }
-            else
-            {
-                randomTeamResult = Team.Blue;
-            }
+            List<Team> possibleTeams = GameController.colorPerTeam.Keys.ToList();
+            float amountOfTeamsAsFloat = (float)GameController.colorPerTeam.Count;
+            int randomTeamIndex = (int)Random.Range(0f, amountOfTeamsAsFloat);
+            Team randomTeamResult = possibleTeams[randomTeamIndex];
             player.team = randomTeamResult;
-            if (assignedPlayer.team == Team.Red)
-            {
-                color = assignedPlayer.color = Color.Lerp(Color.red, Color.white, Random.Range(0f, 0.7f));
-            }
-            else if (assignedPlayer.team == Team.Green)
-            {
-                color = assignedPlayer.color = Color.Lerp(Color.green, Color.white, Random.Range(0f, 0.7f));
-            }
-            else
-            {
-                color = assignedPlayer.color = Color.Lerp(Color.blue, Color.white, Random.Range(0f, 0.7f));
-            }
+            color = assignedPlayer.color = Color.Lerp(GameController.colorPerTeam[assignedPlayer.team], Color.white, Random.Range(0f, 0.7f));
             frogImage.color = color;
         }
         else
