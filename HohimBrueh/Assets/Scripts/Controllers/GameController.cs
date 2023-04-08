@@ -79,7 +79,7 @@ public class GameController : MonoBehaviour
 
     public Dictionary<Team, PlayerScoreDisplay> teamScoreDisplays;
     public Dictionary<Team, int> teamScores;
-    public static Dictionary<Team, Color> colorPerTeam = new Dictionary<Team, Color>{ { Team.Red, Color.red }, { Team.Green, Color.green }, { Team.Blue, Color.blue } };
+    public static Dictionary<Team, Color> colorPerTeam = new Dictionary<Team, Color>{ { Team.Red, Color.red }, { Team.Green, Color.green }, { Team.Blue, Color.blue }, { Team.Yellow, Color.yellow } };
 
     void Awake()
     {
