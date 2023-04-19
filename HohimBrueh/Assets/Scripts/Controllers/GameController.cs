@@ -71,6 +71,8 @@ public class GameController : MonoBehaviour
 
     public Text joinCountdownText, joinGameModeText;
 
+    public Image joinGameModeToggle;
+
     public static bool isTeamMode;
 
     public static bool playersCanDropIn;
@@ -238,23 +240,33 @@ public class GameController : MonoBehaviour
             }
 
             bool playersAreReady = CheckReadyPlayers();
-
-            if (assignedPlayers == 0 && allowTeamMode)
+            joinGameModeText.text = isTeamMode ? "TEAMS" : "FREE  FOR  ALL";
+            if (allowTeamMode)
             {
-
-                if (Input.GetKeyDown(KeyCode.F5) || Input.GetKeyDown(KeyCode.JoystickButton6)) // Controller back button
+                if (assignedPlayers == 0)
                 {
-                    isTeamMode = !isTeamMode;
-                    joinGameModeText.text = isTeamMode ? "TEAM" : "FREE  FOR  ALL";
+                    joinGameModeText.color = Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * 1.5f, 1f));
+                    joinGameModeToggle.enabled = true;
+                    if (Input.GetKeyDown(KeyCode.F5) || Input.GetKeyDown(KeyCode.JoystickButton6)) // Controller back button
+                    {
+                        isTeamMode = !isTeamMode;       
+                    }
+                }
+                else
+                {
+                    joinGameModeText.color = Color.white;
+                    joinGameModeToggle.enabled = false;
                 }
             }
-            else
+            
             if (playersAreReady)
             {
                 finishDelay -= Time.deltaTime;
                 joinCountdownText.text = ((int)(finishDelay) + 1).ToString();
                 if (finishDelay <= 0f)
+                {
                     FinishRound();
+                }
             }
             else
             {
