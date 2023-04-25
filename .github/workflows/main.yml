@@ -4,10 +4,10 @@ name: Frog Smashers Unity Actions
 
 on:
   # pull_request: {}
-  # push: {}
-  push:
-    branches:
-      - master
+  push: {}
+#   push:
+#     branches:
+#       - master
 # on:
 #   push:
 #     tags:
@@ -34,7 +34,7 @@ jobs:
             echo "::set-output name=is_unity_license_set::${{ env.UNITY_LICENSE != '' }}"
   activation:
     needs: [checklicense]
-    if: needs.checklicense.outputs.is_unity_license_set == 'false'
+#     if: needs.checklicense.outputs.is_unity_license_set == 'false'
     name: Request activation file 🔑
     runs-on: ubuntu-latest
     steps:
