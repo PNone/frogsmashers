@@ -2,16 +2,16 @@ name: Frog Smashers Unity Actions
 # Frog Smashers Unity Actions (Copied from https://github.com/game-ci/unity-actions-example/blob/main/.github/workflows/main.yml)
 
 
-on:
-  # pull_request: {}
-  # push: {}
-  push:
-    branches:
-      - master
 # on:
+#   # pull_request: {}
+#   # push: {}
 #   push:
-#     tags:
-#       - '*'
+#     branches:
+#       - master
+on:
+  push:
+    tags:
+      - '*'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -80,36 +80,42 @@ jobs:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
-#   build:
-#     needs: [checklicense]
-#     if: needs.checklicense.outputs.is_unity_license_set == 'true'
-#     name: Build for Linux
-#     runs-on: ubuntu-latest
-#     strategy:
-#       fail-fast: false
-#       matrix:
-#         targetPlatform:
-#           - StandaloneLinux64
-#     steps:
-#       - uses: actions/checkout@v3
-#         with:
-#           lfs: true
-#       - uses: actions/cache@v3
-#         with:
-#           path: ${{ matrix.projectPath }}/Library
-#           key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
-#           restore-keys: |
-#             Library-${{ matrix.projectPath }}-
-#             Library-
-#       # https://github.com/game-ci/unity-builder/releases/
-#       - uses: game-ci/unity-builder@v2
-#         with:
-#           projectPath: ${{ env.PROJECT_PATH }}
-#           targetPlatform: ${{ matrix.targetPlatform }}
-#       - uses: actions/upload-artifact@v3
-#         with:
-#           name: Build-${{ matrix.targetPlatform }}
-#           path: build
+  build:
+    needs: [checklicense]
+    if: needs.checklicense.outputs.is_unity_license_set == 'true'
+    name: Build for Linux
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneLinux64
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - uses: actions/cache@v3
+        with:
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-${{ matrix.projectPath }}-
+            Library-
+      # https://github.com/game-ci/unity-builder/releases/
+      - uses: game-ci/unity-builder@v2
+        with:
+          projectPath: ${{ env.PROJECT_PATH }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          versioning: Tag
+          buildName: FrogSmashersLinux64
+      - uses: actions/upload-artifact@v3
+        with:
+          name: FrogSmashersLinux64
+          path: build/FrogSmashersLinux64
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: FrogSmashersLinux64.zip
 
   buildWithMac:
     needs: [checklicense]
@@ -137,12 +143,17 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-#           buildName: FrogSmashersOSX
+          versioning: Tag
+          buildName: FrogSmashersOSX
       - name: Upload Build
         uses: actions/upload-artifact@v3
         with:
           name: FrogSmashersOSX
-          path: build
+          path: build/FrogSmashersOSX
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: FrogSmashersOSX.zip
 #       - name: Upload binaries to release
 #         uses: svenstaro/upload-release-action@v2
 #         with:
@@ -183,13 +194,18 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-#           buildName: FrogSmashers${{ matrix.targetPlatform }}
-#           versioning: Semantic
+          buildName: FrogSmashersWindows64
+          versioning: Tag
       - name: Upload Build
         uses: actions/upload-artifact@v3
         with:
-          name: StandaloneWindows64
-          path: build
+#           name: StandaloneWindows64
+          name: FrogSmashersWindows64
+          path: build/FrogSmashersWindows64
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: FrogSmashersWindows64.zip
 #       - name: Upload binaries to release
 #         uses: svenstaro/upload-release-action@v2
 #         with:
