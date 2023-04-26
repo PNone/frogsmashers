@@ -114,9 +114,9 @@ jobs:
           path: build
       - name: Zip up output
         run: |
-          cd build
+          cd build/StandaloneLinux64
           ls
-          zip -r ../FrogSmashersLinux64.zip *
+          zip -r ../../FrogSmashersLinux64.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -157,9 +157,9 @@ jobs:
           path: build
       - name: Zip up output
         run: |
-          cd build
+          cd build/FrogSmashersOSX
           ls
-          zip -r ../FrogSmashersOSX.zip *
+          zip -r ../../FrogSmashersOSX.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -214,9 +214,9 @@ jobs:
           path: build
       - name: Zip up output
         run: |
-          cd build
+          cd build/StandaloneWindows64
           ls
-          zip -r ../FrogSmashersWindows64.zip *
+          zip -r ../../FrogSmashersWindows64.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
