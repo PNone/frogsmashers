@@ -158,7 +158,7 @@ jobs:
           path: build
       - name: Zip up output
         run: |
-          cd build/FrogSmashersOSX
+          cd build/StandaloneOSX
           ls
           zip -r ../../FrogSmashersOSX.zip *
       - name: Release
