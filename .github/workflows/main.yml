@@ -218,7 +218,7 @@ jobs:
         run: |
           cd build/StandaloneWindows64
           ls
-          zip -r ../../FrogSmashersWindows64.zip *
+          Compress-Archive -Path . -DestinationPath ../../FrogSmashersWindows64.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
