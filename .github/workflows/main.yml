@@ -111,7 +111,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: FrogSmashersLinux64
-          path: build/FrogSmashersLinux64
+          path: build
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -149,7 +149,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: FrogSmashersOSX
-          path: build/FrogSmashersOSX
+          path: build
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -201,7 +201,7 @@ jobs:
         with:
 #           name: StandaloneWindows64
           name: FrogSmashersWindows64
-          path: build/FrogSmashersWindows64
+          path: build
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
