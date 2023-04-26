@@ -80,7 +80,7 @@ jobs:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
-  build:
+  buildWithLinux:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for Linux
@@ -112,6 +112,11 @@ jobs:
         with:
           name: FrogSmashersLinux64
           path: build
+      - name: Zip up output
+        run: |
+          cd build/FrogSmashersLinux64
+          ls
+          zip -r ../../FrogSmashersLinux64.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -150,6 +155,11 @@ jobs:
         with:
           name: FrogSmashersOSX
           path: build
+      - name: Zip up output
+        run: |
+          cd build/FrogSmashersOSX
+          ls
+          zip -r ../../FrogSmashersOSX.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -202,6 +212,11 @@ jobs:
 #           name: StandaloneWindows64
           name: FrogSmashersWindows64
           path: build
+      - name: Zip up output
+        run: |
+          cd build/FrogSmashersWindows64
+          ls
+          zip -r ../../FrogSmashersWindows64.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
