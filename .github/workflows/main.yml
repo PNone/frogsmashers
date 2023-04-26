@@ -120,6 +120,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersLinux64.zip
 
   buildWithMac:
@@ -163,6 +164,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersOSX.zip
 #       - name: Upload binaries to release
 #         uses: svenstaro/upload-release-action@v2
@@ -220,6 +222,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersWindows64.zip
 #       - name: Upload binaries to release
 #         uses: svenstaro/upload-release-action@v2
