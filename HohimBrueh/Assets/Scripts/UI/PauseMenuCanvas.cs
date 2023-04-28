@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuCanvas : MonoBehaviour
 {
@@ -21,22 +22,31 @@ public class PauseMenuCanvas : MonoBehaviour
     public Text minTimeForFlySpawnText;
     public Slider maxTimeForFlySpawnSlider;
     public Text maxTimeForFlySpawnText;
+    public Button backButton;
 
     public Button resumeButton;
     public Button settingsButton;
-    public Button backButton;
+    public Button restartButton;
+    public Button goMainMenuButton;
+    public Button quitButton;
 
     public Canvas mainCanvas;
     public Canvas settingsCanvas;
     // Start is called before the first frame update
     void Start()
     {
-        Button btn = resumeButton.GetComponent<Button>();
-		btn.onClick.AddListener(Resume);
-        Button btn2 = settingsButton.GetComponent<Button>();
-		btn2.onClick.AddListener(OpenSettings);
-        Button btn3 = backButton.GetComponent<Button>();
-		btn3.onClick.AddListener(CloseSettings);
+        Button backBtn = backButton.GetComponent<Button>();
+		backBtn.onClick.AddListener(CloseSettings);
+        Button resumeBtn = resumeButton.GetComponent<Button>();
+		resumeBtn.onClick.AddListener(Resume);
+        Button settingsBtn = settingsButton.GetComponent<Button>();
+		settingsBtn.onClick.AddListener(OpenSettings);
+        Button restartBtn = restartButton.GetComponent<Button>();
+		restartBtn.onClick.AddListener(RestartScene);
+        Button goMainMenuBtn = goMainMenuButton.GetComponent<Button>();
+		goMainMenuBtn.onClick.AddListener(GoToMainMenu);
+        Button quitBtn = quitButton.GetComponent<Button>();
+		quitBtn.onClick.AddListener(QuitGame);
     }
 
     // Update is called once per frame
@@ -88,5 +98,21 @@ public class PauseMenuCanvas : MonoBehaviour
     {
         mainCanvas.enabled = true;
         settingsCanvas.enabled = false;
+    }
+
+    void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    void GoToMainMenu()
+    {
+        GameController.isPaused = false;
+        SceneManager.LoadScene("TitleScreen");
+    }
+
+    void QuitGame()
+    {
+        Application.Quit();
     }
 }
