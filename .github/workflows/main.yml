@@ -107,7 +107,6 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
-          buildName: FrogSmashersLinux64
       - uses: actions/upload-artifact@v3
         with:
           name: FrogSmashersLinux64
@@ -150,7 +149,6 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
-          buildName: FrogSmashersOSX
       - name: Upload Build
         uses: actions/upload-artifact@v3
         with:
@@ -206,7 +204,6 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          buildName: FrogSmashersWindows64
           versioning: Tag
       - name: Upload Build
         uses: actions/upload-artifact@v3
