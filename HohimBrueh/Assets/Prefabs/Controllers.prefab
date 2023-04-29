@@ -238,7 +238,6 @@ MonoBehaviour:
   scoreDisplayPrefab: {fileID: 114516451459036664, guid: 059d29929d48ac340ba6ad32f61d63ef,
     type: 3}
   pauseMenuPrefab: {fileID: 1729754882876724940}
-  pauseMenuComp: {fileID: 0}
   playerColors:
   - {r: 0.6666667, g: 0.6901961, b: 0.34509805, a: 1}
   - {r: 0.52156866, g: 0.40784314, b: 0.5176471, a: 1}
@@ -249,6 +248,7 @@ MonoBehaviour:
   - {r: 1, g: 0.7081123, b: 0.30147058, a: 1}
   - {r: 0.2509804, g: 0.69803923, b: 0.84705883, a: 1}
   - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.09803922, g: 0.11764706, b: 0.8392157, a: 1}
   isJoinScreen: 0
   joinCanvas:
   - {fileID: 0}
