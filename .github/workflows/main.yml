@@ -107,6 +107,7 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
+          buildName: FrogSmashersLinux64
       - uses: actions/upload-artifact@v3
         with:
           name: FrogSmashersLinux64
@@ -114,7 +115,6 @@ jobs:
       - name: Zip up output
         run: |
           cd build/StandaloneLinux64
-          ls
           zip -r ../../FrogSmashersLinux64.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -149,6 +149,7 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
+          buildName: FrogSmashersOSX
       - name: Upload Build
         uses: actions/upload-artifact@v3
         with:
@@ -157,7 +158,6 @@ jobs:
       - name: Zip up output
         run: |
           cd build/StandaloneOSX
-          ls
           zip -r ../../FrogSmashersOSX.zip *
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -205,6 +205,7 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
+          buildName: FrogSmashersWindows64
       - name: Upload Build
         uses: actions/upload-artifact@v3
         with:
@@ -214,7 +215,6 @@ jobs:
       - name: Zip up output
         run: |
           cd build/StandaloneWindows64
-          ls
           Compress-Archive -Path . -DestinationPath ../../FrogSmashersWindows64.zip
       - name: Release
         uses: softprops/action-gh-release@v1
