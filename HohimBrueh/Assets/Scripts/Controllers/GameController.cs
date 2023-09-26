@@ -187,7 +187,9 @@ public class GameController : MonoBehaviour
         List<Player> winningPlayers = GetLeadingPlayers();
         activePlayers.Clear();
         foreach (var p in winningPlayers)
+        {
             activePlayers.Add(p);
+        }
         playersCanDropIn = false;
        
     }
@@ -239,10 +241,9 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            bool playersAreReady = CheckReadyPlayers();
-            joinGameModeText.text = isTeamMode ? "TEAMS" : "FREE  FOR  ALL";
             if (allowTeamMode)
             {
+                joinGameModeText.text = isTeamMode ? "TEAMS" : "FREE  FOR  ALL";
                 if (assignedPlayers == 0)
                 {
                     joinGameModeText.color = Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * 1.5f, 1f));
@@ -258,7 +259,8 @@ public class GameController : MonoBehaviour
                     joinGameModeToggle.enabled = false;
                 }
             }
-            
+
+            bool playersAreReady = CheckReadyPlayers();
             if (playersAreReady)
             {
                 finishDelay -= Time.deltaTime;
@@ -284,7 +286,9 @@ public class GameController : MonoBehaviour
                 {
                     flySpawnDelay -= Time.deltaTime;
                     if (flySpawnDelay <= 0f)
+                    {
                         activeFly = Instantiate(flyPrefab, Terrain.GetFlySpawnPoint(), Quaternion.identity);
+                    }
                 }
                 else
                 {
@@ -379,12 +383,34 @@ public class GameController : MonoBehaviour
                         SpawnCharacter(activePlayers[i]);
                     }
                 }
+                
+                if (activePlayers[i].character != null && activePlayers[i].character.transform.position.y > Terrain.ScreenTop)
+                {
+                    var spr = activePlayers[i].offscreenDot;
+                    if (spr == null)
+                    {
+                        activePlayers[i].offscreenDot = spr = Instantiate(offscreenDotPrefab);
+                        spr.color = activePlayers[i].color;
+                    }
+                    spr.enabled = true;
+                    spr.transform.position = new Vector3(activePlayers[i].character.transform.position.x, Terrain.ScreenTop, -6f);
+                }
+                else
+                {
+                    var spr = activePlayers[i].offscreenDot;
+                    if (spr != null)
+                    {
+                        spr.enabled = false;
+                    }
+                }
             }
 
 
             finishDelay -= Time.deltaTime;
             if (finishDelay < 0f)
+            {
                 FinishRound();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.F6))
@@ -477,7 +503,9 @@ public class GameController : MonoBehaviour
             foreach (var jc in joinCanvas)
             {
                 if (jc.HasAssignedPlayer())
+                {
                     activePlayers.Add(jc.assignedPlayer);
+                }
 
             }
             var mapsToUse = originalLevelNames.ToList();
@@ -846,7 +874,9 @@ public class GameController : MonoBehaviour
             return teamsWithTiedPlayers.Count > 1;
         }
         else
+        {
             return tiedPlayers.Count > 1;
+        }
 
     }
 
