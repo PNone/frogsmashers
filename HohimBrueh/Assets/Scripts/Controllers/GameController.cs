@@ -50,12 +50,10 @@ public class GameController : MonoBehaviour
     public SpriteRenderer offscreenDotPrefab;
 
     public Canvas scoreCanvas;
-    public Canvas pauseMenu;
 
     public List<PlayerScoreDisplay> playerScoreDisplays;
 
     public PlayerScoreDisplay scoreDisplayPrefab;
-    public PauseMenuCanvas pauseMenuPrefab;
 
     static GameController instance;
 
@@ -80,8 +78,6 @@ public class GameController : MonoBehaviour
     public static bool playersCanDropIn;
 
     public static bool isShowDown;
-
-    public static bool isPaused;
 
     public Dictionary<Team, PlayerScoreDisplay> teamScoreDisplays;
     public Dictionary<Team, int> teamScores;
@@ -209,25 +205,6 @@ public class GameController : MonoBehaviour
     FreeLives.InputState combinedInput = new InputState();
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.JoystickButton7)) // Start button
-        {
-            isPaused = !isPaused;
-        }
-        if (isPaused)
-        {
-            pauseMenu.enabled = true;
-            Time.timeScale = 0f;
-            return;
-        }
-        else
-        {
-            pauseMenu.enabled = false;
-            Time.timeScale = 1f;
-        }
         if (state == GameState.JoinScreen)
         {
             for (int i = inactivePlayers.Count - 1; i >= 0; i--)
@@ -424,6 +401,16 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F6))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            showGui = !showGui;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
 
@@ -772,8 +759,31 @@ public class GameController : MonoBehaviour
         return null;
     }
 
+    bool showGui;
+
     public void OnGUI()
     {
+        if (showGui)
+        {
+            GUILayout.BeginArea(new Rect(0, 0, 800, 800));
+            charactersBounceEachOther = GUILayout.Toggle(charactersBounceEachOther, "Characters Bounce Each Other");
+            weirdBounceTrajectories = GUILayout.Toggle(weirdBounceTrajectories, "Weird Bounce Trajectories");
+            onlyBounceBeforeRecover = GUILayout.Toggle(onlyBounceBeforeRecover, "Only Bounce Before Recover");
+            allowTeamMode = GUILayout.Toggle(allowTeamMode, "Allow Team Deathmatch (F5/back to toggle mode)");
+            randomizeMaps = GUILayout.Toggle(randomizeMaps, "Randomize Map Order");
+            winnerTakesAll = GUILayout.Toggle(winnerTakesAll, "Only Winners Get Points");
+            punishSelfDeath = GUILayout.Toggle(punishSelfDeath, "Self-Kills Lose Points");
+            addPodium3 = GUILayout.Toggle(addPodium3, "Add Podium3 To Maps");
+            allowCustomScoreToWin = GUILayout.Toggle(allowCustomScoreToWin, "Use Custom Score To Win");
+            customScoreToWin = GUILayout.HorizontalScrollbar(customScoreToWin, 1.0f, 1.0f, 100.0f);
+            GUILayout.Label($"Custom score to win is {(int)customScoreToWin}");
+            enableFly = GUILayout.Toggle(enableFly, "Enable Fly");
+            minTimeForFlySpawn = GUILayout.HorizontalScrollbar(minTimeForFlySpawn, 1f, 1f, 100f);
+            GUILayout.Label($"Minimum Seconds For Fly Spawn is {(int)minTimeForFlySpawn}");
+            maxTimeForFlySpawn = GUILayout.HorizontalScrollbar(maxTimeForFlySpawn, 1f, 1f, 100f);
+            GUILayout.Label($"Maximum Seconds For Fly Spawn is {(int)maxTimeForFlySpawn}");
+            GUILayout.EndArea();
+        }
     }
 
     public static Color GetAvailableColor()
