@@ -254,7 +254,7 @@ public class GameController : MonoBehaviour
                     joinGameModeToggle.enabled = false;
                 }
             }
-
+            
             bool playersAreReady = CheckReadyPlayers();
             if (playersAreReady)
             {
@@ -302,7 +302,7 @@ public class GameController : MonoBehaviour
                         SpawnCharacter(activePlayers[i]);
                     }
                 }
-                
+
                 if (activePlayers[i].character != null && activePlayers[i].character.transform.position.y > Terrain.ScreenTop)
                 {
                     var spr = activePlayers[i].offscreenDot;
@@ -368,7 +368,7 @@ public class GameController : MonoBehaviour
                         SpawnCharacter(activePlayers[i]);
                     }
                 }
-                
+
                 if (activePlayers[i].character != null && activePlayers[i].character.transform.position.y > Terrain.ScreenTop)
                 {
                     var spr = activePlayers[i].offscreenDot;
