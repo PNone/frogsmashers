@@ -115,7 +115,7 @@ public class GameController : MonoBehaviour
             inactivePlayers.Add(p);
             p = new Player(FreeLives.InputReader.Device.Gamepad4, playerColors[3], 3);
             inactivePlayers.Add(p);
-             p = new Player(FreeLives.InputReader.Device.Keyboard1, playerColors[4], 4);
+            p = new Player(FreeLives.InputReader.Device.Keyboard1, playerColors[4], 4);
             inactivePlayers.Add(p);
             p = new Player(FreeLives.InputReader.Device.Keyboard2, playerColors[5], 5);
             inactivePlayers.Add(p);
