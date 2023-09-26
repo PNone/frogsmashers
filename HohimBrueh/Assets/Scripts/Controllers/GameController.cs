@@ -127,7 +127,6 @@ public class GameController : MonoBehaviour
             inactivePlayers.Add(p);
             p = new Player(FreeLives.InputReader.Device.Gamepad8, playerColors[9], 9);
             inactivePlayers.Add(p);
-
         }
         else
         {
@@ -206,12 +205,8 @@ public class GameController : MonoBehaviour
     FreeLives.InputState combinedInput = new InputState();
     void Update()
     {
-
-        
-
         if (state == GameState.JoinScreen)
         {
-
             for (int i = inactivePlayers.Count - 1; i >= 0; i--)
             {
                 InputReader.GetInput(inactivePlayers[i].inputDevice, input);
@@ -294,8 +289,6 @@ public class GameController : MonoBehaviour
                 {
                     flySpawnDelay = UnityEngine.Random.Range(minTimeForFlySpawn, maxTimeForFlySpawn);
                 }
-
-
             }
 
 
@@ -309,11 +302,9 @@ public class GameController : MonoBehaviour
                         SpawnCharacter(activePlayers[i]);
                     }
                 }
-
+                
                 if (activePlayers[i].character != null && activePlayers[i].character.transform.position.y > Terrain.ScreenTop)
                 {
-
-
                     var spr = activePlayers[i].offscreenDot;
                     if (spr == null)
                     {
@@ -322,8 +313,6 @@ public class GameController : MonoBehaviour
                     }
                     spr.enabled = true;
                     spr.transform.position = new Vector3(activePlayers[i].character.transform.position.x, Terrain.ScreenTop, -6f);
-
-
                 }
                 else
                 {
@@ -333,10 +322,6 @@ public class GameController : MonoBehaviour
                         spr.enabled = false;
                     }
                 }
-
-
-
-
             }
 
             ArrangeScoreboards();
@@ -506,7 +491,6 @@ public class GameController : MonoBehaviour
                 {
                     activePlayers.Add(jc.assignedPlayer);
                 }
-
             }
             var mapsToUse = originalLevelNames.ToList();
             if (addPodium3)
@@ -607,9 +591,6 @@ public class GameController : MonoBehaviour
 
     internal static void RegisterKill(Player gotPoint, Player gotKilled, int hits)
     {
-
-
-
         if (State == GameState.RoundFinished)
         {
             return;
@@ -877,7 +858,6 @@ public class GameController : MonoBehaviour
         {
             return tiedPlayers.Count > 1;
         }
-
     }
 
 }
