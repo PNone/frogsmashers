@@ -204,7 +204,6 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          buildName: FrogSmashersWindows64
           versioning: Tag
           buildName: FrogSmashersWindows64
       - name: Upload Build
