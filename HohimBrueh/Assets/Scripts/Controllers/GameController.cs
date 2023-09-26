@@ -238,6 +238,7 @@ public class GameController : MonoBehaviour
 
             if (allowTeamMode)
             {
+                joinGameModeText.enabled = true;
                 joinGameModeText.text = isTeamMode ? "TEAMS" : "FREE  FOR  ALL";
                 if (assignedPlayers == 0)
                 {
@@ -253,6 +254,24 @@ public class GameController : MonoBehaviour
                     joinGameModeText.color = Color.white;
                     joinGameModeToggle.enabled = false;
                 }
+            }
+            else
+            {
+                // Only do this when allowTeamMode is flipped while isTeamMode was true
+                if (isTeamMode && assignedPlayers > 0)
+                {
+                    foreach (var j in instance.joinCanvas)
+                    {
+                        if (j.HasAssignedPlayer()) 
+                        {
+                            j.UnAssignPlayer();
+                        }
+                        
+                    }
+                }
+                joinGameModeText.enabled = false;
+                isTeamMode = false;
+                joinGameModeToggle.enabled = false;
             }
             
             bool playersAreReady = CheckReadyPlayers();

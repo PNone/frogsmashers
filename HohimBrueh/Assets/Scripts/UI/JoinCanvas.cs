@@ -159,7 +159,7 @@ public class JoinCanvas : MonoBehaviour
         return assignedPlayer != null;
     }
 
-    void UnAssignPlayer()
+    public void UnAssignPlayer()
     {
         GameController.ReturnPlayer(assignedPlayer);
         GameController.ReturnColor(color);
@@ -172,6 +172,5 @@ public class JoinCanvas : MonoBehaviour
         chooseColorCanvas.enabled = false;
         backPromptCanvas.enabled = false;
         assignedPlayer = null;
-
     }
 }
