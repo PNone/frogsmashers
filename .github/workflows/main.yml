@@ -2,16 +2,16 @@ name: Frog Smashers Unity Actions
 # Frog Smashers Unity Actions (Copied from https://github.com/game-ci/unity-actions-example/blob/main/.github/workflows/main.yml)
 
 
-# on:
+on:
 #   # pull_request: {}
-#   # push: {}
+  push: {}
 #   push:
 #     branches:
 #       - master
-on:
-  push:
-    tags:
-      - '*'
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
