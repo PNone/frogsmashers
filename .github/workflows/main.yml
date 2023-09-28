@@ -64,12 +64,11 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-test-project-${{ matrix.targetPlatform }}
+          key: Library-test-project
           restore-keys: |
-            Library-test-project-
             Library-
       # https://github.com/game-ci/unity-test-runner/releases/
-      - uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-test-runner@v3
         id: testRunner
         with:
           projectPath: ${{ env.PROJECT_PATH }}
@@ -88,6 +87,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        projectPath:
+          - FrogSmashers
         targetPlatform:
           - StandaloneLinux64
     steps:
@@ -96,13 +97,16 @@ jobs:
           lfs: true
       - uses: actions/cache@v3
         with:
-          path: Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
+          path: ${{ matrix.projectPath }}/Library
+          key:
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
+            hashFiles(matrix.projectPath) }}
           restore-keys: |
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
       # https://github.com/game-ci/unity-builder/releases/
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v3
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
@@ -130,6 +134,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        projectPath:
+          - FrogSmashers
         targetPlatform:
           - StandaloneOSX
     steps:
@@ -139,12 +145,15 @@ jobs:
           lfs: true
       - uses: actions/cache@v3
         with:
-          path: Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
+          path: ${{ matrix.projectPath }}/Library
+          key:
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
+            hashFiles(matrix.projectPath) }}
           restore-keys: |
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v3
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
@@ -185,6 +194,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        projectPath:
+          - FrogSmashers
         targetPlatform:
 #           - StandaloneWindows
           - StandaloneWindows64
@@ -195,12 +206,15 @@ jobs:
           lfs: true
       - uses: actions/cache@v3
         with:
-          path: Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
+          path: ${{ matrix.projectPath }}/Library
+          key:
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
+            hashFiles(matrix.projectPath) }}
           restore-keys: |
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v3
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
