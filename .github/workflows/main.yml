@@ -88,7 +88,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - ${{ env.PROJECT_PATH }}
+          - HohimBrueh
         targetPlatform:
           - StandaloneLinux64
     steps:
@@ -135,7 +135,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - ${{ env.PROJECT_PATH }}
+          - HohimBrueh
         targetPlatform:
           - StandaloneOSX
     steps:
@@ -195,7 +195,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - ${{ env.PROJECT_PATH }}
+          - HohimBrueh
         targetPlatform:
 #           - StandaloneWindows
           - StandaloneWindows64
