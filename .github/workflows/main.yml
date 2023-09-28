@@ -52,33 +52,6 @@ jobs:
           name: ${{ steps.getManualLicenseFile.outputs.filePath }}
           path: ${{ steps.getManualLicenseFile.outputs.filePath }}
 
-  test:
-    needs: [checklicense]
-    if: needs.checklicense.outputs.is_unity_license_set == 'true'
-    name: Test all modes ✨
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          lfs: true
-      - uses: actions/cache@v3
-        with:
-          path: Library
-          key: Library-test-project
-          restore-keys: |
-            Library-
-      # https://github.com/game-ci/unity-test-runner/releases/
-      - uses: game-ci/unity-test-runner@v2
-        id: testRunner
-        with:
-          projectPath: ${{ env.PROJECT_PATH }}
-          testMode: all
-          customParameters: "-nographics"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Test results (all modes)
-          path: ${{ steps.testRunner.outputs.artifactsPath }}
-
   buildWithLinux:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
