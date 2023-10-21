@@ -35,7 +35,6 @@ public class JoinCanvas : MonoBehaviour
     {
 
     }
-    float delay = 1f;
     InputState input = new InputState();
     float colorLerpAmount;
     // Update is called once per frame

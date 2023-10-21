@@ -285,8 +285,16 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameController.isPaused)
+        {
+            Time.timeScale = 0f;
+            return;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
         CheckInput();
-
         if (TimeBumpActive)
         {
             timeBumpTimeLeft -= Time.deltaTime;

@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace FreeLives
@@ -176,20 +175,10 @@ namespace FreeLives
         private static void Initialize()
         {
             if (haveInitialized)
+            {
                 return;
+            }
             haveInitialized = true;
-
-            int i = 0;
-//            foreach (var device in InputManager.Devices)
-//            {
-//                
-//                if (device != null)
-//                {
-//                    inControlDevices[i] = device;
-//                    i++;
-//                }
-//            }
-
         }
 
         

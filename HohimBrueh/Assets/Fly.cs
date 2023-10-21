@@ -23,7 +23,15 @@ public class Fly : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (GameController.isPaused)
+        {
+            Time.timeScale = 0f;
+            return;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
         updateDirectionDelay -= Time.deltaTime;
         if (updateDirectionDelay < 0f)
         {
