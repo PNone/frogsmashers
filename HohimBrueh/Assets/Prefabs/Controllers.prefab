@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 114147586807100640}
   - component: {fileID: 114384183670500810}
   - component: {fileID: 114790429053299156}
+  - component: {fileID: 6729671381030751173}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -238,7 +239,6 @@ MonoBehaviour:
   scoreDisplayPrefab: {fileID: 114516451459036664, guid: 059d29929d48ac340ba6ad32f61d63ef,
     type: 3}
   pauseMenuPrefab: {fileID: 1729754882876724940}
-  pauseMenuComp: {fileID: 0}
   playerColors:
   - {r: 0.6666667, g: 0.6901961, b: 0.34509805, a: 1}
   - {r: 0.52156866, g: 0.40784314, b: 0.5176471, a: 1}
@@ -258,6 +258,18 @@ MonoBehaviour:
   joinCountdownText: {fileID: 0}
   joinGameModeText: {fileID: 0}
   joinGameModeToggle: {fileID: 0}
+--- !u!114 &6729671381030751173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734529911481164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ce05ea049c8faa4097b6875cf604261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4654262899430098413
 PrefabInstance:
   m_ObjectHideFlags: 0
