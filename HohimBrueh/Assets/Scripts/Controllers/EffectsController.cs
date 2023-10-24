@@ -45,6 +45,8 @@ public class EffectsController : MonoBehaviour
 
     public Vector2 cameraWobbleSpeed, cameraWobbleAmount;
     float cameraWobbleXCounter, cameraWobbleYCounter;
+    
+    static System.Random rng = new System.Random();
 
     public static void CreateSmokeRing(Vector3 pos, Quaternion rot, Color col)
     {
@@ -430,40 +432,13 @@ public class EffectsController : MonoBehaviour
         position.z = 11f;
         ssp.transform.localPosition = position;
         if (hitsTaken > 0)
+        {
             ssp.SetText("+" + hitsTaken, playerColor);
+        }
         else
         {
-            if (Random.value < 0.2f)
-                ssp.SetText("OOPS!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("DERP!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("FAIL!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("CRAP!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("SHIT!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("CRUD!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText(":(", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("DARN!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("BUTTS!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("FAIL!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("DRAT!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("OH DEAR!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("OH NO!", playerColor);
-            else if (Random.value < 0.2f)
-                ssp.SetText("FAREWELL, CRUEL WORLD!", playerColor);
-            else
-                ssp.SetText("~_~", playerColor);
-            // ssp.SetText(hitsTaken.ToString(), playerColor);
+            int index = rng.Next(ConfigController.Config.DeathTexts.Count);
+            ssp.SetText(ConfigController.Config.DeathTexts[index], playerColor);
         }
     }
 
