@@ -159,7 +159,7 @@ jobs:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
