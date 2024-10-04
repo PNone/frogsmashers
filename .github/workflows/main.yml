@@ -47,7 +47,7 @@ jobs:
           unityVersion: "2022.3.11f1"
       # Upload artifact (Unity_v20XX.X.XXXX.alf)
       - name: Expose as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.getManualLicenseFile.outputs.filePath }}
           path: ${{ steps.getManualLicenseFile.outputs.filePath }}
@@ -68,7 +68,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ${{ matrix.projectPath }}/Library
           key:
@@ -89,7 +89,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
           buildName: FrogSmashersLinux64
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: FrogSmashersLinux64
           path: build
@@ -98,7 +98,7 @@ jobs:
           cd build/StandaloneLinux64
           zip -r ../../FrogSmashersLinux64.zip *
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersLinux64.zip
@@ -120,7 +120,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ${{ matrix.projectPath }}/Library
           key:
@@ -141,7 +141,7 @@ jobs:
           versioning: Tag
           buildName: FrogSmashersOSX
       - name: Upload Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FrogSmashersOSX
           path: build
@@ -150,7 +150,7 @@ jobs:
           cd build/StandaloneOSX
           zip -r ../../FrogSmashersOSX.zip *
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersOSX.zip
@@ -172,7 +172,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ${{ matrix.projectPath }}/Library
           key:
@@ -193,7 +193,7 @@ jobs:
           versioning: Tag
           buildName: FrogSmashersWindows64
       - name: Upload Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FrogSmashersWindows64
           path: build
@@ -202,7 +202,7 @@ jobs:
           cd build/StandaloneWindows64
           Compress-Archive -Path . -DestinationPath ../../FrogSmashersWindows64.zip
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersWindows64.zip

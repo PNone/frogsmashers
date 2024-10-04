@@ -441,7 +441,6 @@ public class Character : MonoBehaviour
                 else if (input.right)
                 {
                     attackDir = Vector2.up + Vector2.right;
-
                 }
             }
             else if (input.down && !OnGround)
@@ -1583,13 +1582,11 @@ public class Character : MonoBehaviour
                 {
                     StopBouncing();
                 }
-                {
-                    SoundController.PlaySoundEffect("Burp", 0.5f, TongueTipPos);
-                    tongueState = TongueState.HitFlyBurping;
-                    tongueDelayLeft = 0.65f;
-                    IngestedFly = true;
-                    ingestingFly.gameObject.SetActive(false);
-                }
+                SoundController.PlaySoundEffect("Burp", 0.5f, TongueTipPos);
+                tongueState = TongueState.HitFlyBurping;
+                tongueDelayLeft = 0.65f;
+                IngestedFly = true;
+                ingestingFly.gameObject.SetActive(false);
             }
         }
         else if (tongueState == TongueState.HitEnemyTongueStunned || tongueState == TongueState.HitFlyBurping)
