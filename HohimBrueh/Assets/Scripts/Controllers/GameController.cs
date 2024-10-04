@@ -652,11 +652,7 @@ public class GameController : MonoBehaviour
             }
             else if (isTeamMode)
             {
-                Dictionary<Team, bool> teamsWithLivingPlayers = new Dictionary<Team, bool>();
-                foreach (var player in activePlayers)
-                {
-                    teamsWithLivingPlayers[player.team] = true;
-                }
+                Dictionary<Team, bool> teamsWithLivingPlayers = GetPlayerTeams(activePlayers);
 
                 // Just in case everyone is dead, not sure if that is even possible
                 if (teamsWithLivingPlayers.Count < 2)
@@ -814,8 +810,7 @@ public class GameController : MonoBehaviour
         inactivePlayers.Add(player);
     }
 
-
-    public static List<Player> GetLeadingPlayers()
+    internal static List<Player> GetTiedPlayers()
     {
         int topScore = -1;
         List<Player> tiedPlayers = new List<Player>();
@@ -830,6 +825,36 @@ public class GameController : MonoBehaviour
                 topScore = player.roundWins;
                 tiedPlayers.Clear();
                 tiedPlayers.Add(player);
+            }
+        }
+        return tiedPlayers;
+    }
+
+    internal static Dictionary<Team, bool> GetPlayerTeams(List<Player> players)
+    {
+        Dictionary<Team, bool> teamsWithPlayers = new Dictionary<Team, bool>();
+        foreach (var player in players)
+        {
+            teamsWithPlayers[player.team] = true;
+        }
+        return teamsWithPlayers;
+    }
+
+
+    public static List<Player> GetLeadingPlayers()
+    {
+        List<Player> tiedPlayers = GetTiedPlayers();
+        if (GameController.isTeamMode)
+        {
+            Dictionary<Team, bool> teamsWithTiedPlayers = GetPlayerTeams(tiedPlayers);
+            // Add all players of tied teams to tiedPlayers list
+            tiedPlayers = new List<Player>();
+            foreach (var player in activePlayers)
+            {
+                if (teamsWithTiedPlayers.ContainsKey(player.team))
+                {
+                    tiedPlayers.Add(player);
+                }
             }
         }
 
@@ -838,28 +863,10 @@ public class GameController : MonoBehaviour
 
     public static bool AreAnyPlayersTiedForVictory()
     {
-        int topScore = -1;
-        List<Player> tiedPlayers = new List<Player>();
-        foreach (var player in activePlayers)
-        {
-            if (player.roundWins == topScore)
-            {
-                tiedPlayers.Add(player);
-            }
-            else if (player.roundWins > topScore)
-            {
-                topScore = player.roundWins;
-                tiedPlayers.Clear();
-                tiedPlayers.Add(player);
-            }
-        }
+        List<Player> tiedPlayers = GetTiedPlayers();
         if (GameController.isTeamMode)
         {
-            Dictionary<Team, bool> teamsWithTiedPlayers = new Dictionary<Team, bool>();
-            foreach (var player in tiedPlayers)
-            {
-                teamsWithTiedPlayers[player.team] = true;
-            }
+            Dictionary<Team, bool> teamsWithTiedPlayers = GetPlayerTeams(tiedPlayers);
             // At least 2 teams have the same score
             return teamsWithTiedPlayers.Count > 1;
         }
