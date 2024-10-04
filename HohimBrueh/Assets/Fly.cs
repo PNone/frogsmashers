@@ -40,19 +40,10 @@ public class Fly : MonoBehaviour
         }
 
         if (!BeingIngested)
-        {
             RunMotion();
-        }
 
-        if (
-            transform.position.x < Terrain.LeftKillPoint ||
-            transform.position.x > Terrain.RightKillPoint ||
-            transform.position.y > Terrain.TopKillPoint ||
-            transform.position.y < Terrain.BotKillPoint
-            )
-        {
+        if (transform.position.x < Terrain.LeftKillPoint || transform.position.x > Terrain.RightKillPoint || transform.position.y > Terrain.TopKillPoint || transform.position.y < Terrain.BotKillPoint)
             Destroy(gameObject);
-        }
 
     }
 
@@ -99,13 +90,9 @@ public class Fly : MonoBehaviour
         }
 
         if (velocityT.x < 0)
-        {
             sprite.transform.localScale = new Vector3(1f, 1f, 1f);
-        }
         else
-        {
             sprite.transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
 
         transform.position += (Vector3)velocityT;
     }
@@ -118,8 +105,6 @@ public class Fly : MonoBehaviour
             updateDirectionDelay = Random.Range(1f, 3f);
         }
         else
-        {
             targetVelocity = Random.insideUnitCircle.normalized * maxSpeed;
-        }
     }
 }

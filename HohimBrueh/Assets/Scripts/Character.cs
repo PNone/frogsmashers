@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FreeLives;
@@ -253,16 +253,18 @@ public class Character : MonoBehaviour
 
     void CheckInput()
     {
-        if (player != null)
+        if (player == null)
+        {
+            //InputReader.GetInput(input);
+        }
+        else
         {
             if (GameController.State == GameState.RoundFinished && !IsWinningPlayer())
-            {
                 InputReader.ClearInputState(input);
-            }
             else
-            {
                 InputReader.GetInput(player.inputDevice, input);
-            }
+
+
         }
     }
 
@@ -271,9 +273,7 @@ public class Character : MonoBehaviour
         if (GameController.isTeamMode)
         {
             if (GameController.GetWinningPlayer() != null)
-            {
                 return player.team == GameController.GetWinningPlayer().team;
-            }
         }
         else
         {
@@ -306,50 +306,37 @@ public class Character : MonoBehaviour
         }
 
         if (state != CharacterState.Bouncing)
-        {
             AddInputMotionNormal();
-        }
         else
-        {
             AddInputMotionBouncing();
-        }
 
         RunPhysics();
         ClampMotion();
         ApplyMotionVector();
         if (state == CharacterState.Attacking)
-        {
             RunAttack();
-        }
         else if (state == CharacterState.Tounge)
-        {
             RunTongue();
-        }
 
         if (input.yButton && !input.wasYButton && Application.isEditor)
         {
             Vector2 dir = Vector2.zero;
             if (input.right)
-            {
                 dir = Vector2.right;
-            }
             if (input.left)
-            {
                 dir = -Vector2.right;
-            }
             if (input.up)
-            {
                 dir += Vector2.up;
-            }
             if (input.down)
-            {
                 dir -= Vector2.up;
-            }
 
             GetHit(dir, UnityEngine.Random.value, this);
+
         }
 
         CheckDeath();
+
+
     }
 
     void CheckDeath()
@@ -377,42 +364,27 @@ public class Character : MonoBehaviour
             GameController.RegisterKill(lastHitByPlayer, player, hitsTaken);
 
             if (lastHitByPlayer == null)
-            {
                 FreeLives.SoundController.PlaySoundEffect("KnockoutSuicide", 0.45f, transform.position);
-            }
             else if (hitsTaken <= 1)
-            {
                 FreeLives.SoundController.PlaySoundEffect("Knockout1", 0.55f, transform.position);
-            }
             else if (hitsTaken <= 3)
-            {
                 FreeLives.SoundController.PlaySoundEffect("Knockout2", 0.65f, transform.position);
-            }
             else
-            {
                 FreeLives.SoundController.PlaySoundEffect("Knockout3", 0.75f, transform.position);
-            }
 
             if (lastHitByPlayer != null)
-            {
                 EffectsController.CreateSideScorePlum(transform.position, killedOnSide, hitsTaken == 0 ? 1 : hitsTaken, lastHitByPlayer.color);
-            }
             else
-            {
                 EffectsController.CreateSideScorePlum(transform.position, killedOnSide, -1, player.color);
-            }
             if (transform.position.y > Terrain.TopKillPoint)
             {
                 EffectsController.CreateKnockedUpEffect(GetComponent<CharacterAnimator>());
                 if (player != null)
-                {
                     player.spawnDelay = 3f;
-                }
+
             }
             if (IngestedFly)
-            {
                 Destroy(ingestingFly.gameObject);
-            }
             Destroy(gameObject);
         }
     }
@@ -449,14 +421,17 @@ public class Character : MonoBehaviour
                 if (!input.left && !input.right)
                 {
                     attackDir = Vector2.down;
+
                 }
                 else if (input.left)
                 {
                     attackDir = Vector2.down + Vector2.left;
+
                 }
                 else if (input.right)
                 {
                     attackDir = Vector2.down + Vector2.right;
+
                 }
             }
         }
@@ -466,9 +441,7 @@ public class Character : MonoBehaviour
             attackState = AttackState.Attacking;
             SoundController.PlaySoundEffect("BatSwing", 0.4f + attackChargeM * 0.4f, transform.position);
             if (attackChargeM > 0.25f || IngestedFly)
-            {
                 SoundController.PlaySoundEffect("BatSwingVoice", 0.4f, transform.position);
-            }
             attackTimeLeft = attackTime;
             if (attackChargeM > 0.5f)
             {
@@ -504,14 +477,10 @@ public class Character : MonoBehaviour
                 Vector2 attackOffset = Vector2.up;
                 float rangeBonus = 0f;
                 if (attackChargeM > 0.5f)
-                {
                     rangeBonus = attackChargeM;
-                }
                 float radius = 1.25f;
                 if (attackDir.y < 0f)
-                {
                     radius = 1.75f;
-                }
                 hits = Physics2D.CircleCastAll((Vector2)transform.position + attackOffset, radius, attackDir, attackRange + rangeBonus, characterLayer);
                 Debug.DrawLine(transform.position + (Vector3)attackOffset, transform.position + (Vector3)attackOffset + (Vector3)attackDir.normalized * (attackRange + rangeBonus + radius), Color.red, 1f);
 
@@ -527,6 +496,7 @@ public class Character : MonoBehaviour
                         }
                     }
                 }
+
 
                 attackState = AttackState.Recovering;
                 attackRecoverTimeLeft = attackRecoverTime;
@@ -548,13 +518,9 @@ public class Character : MonoBehaviour
         if (timeSinceHit > 0.35f)
         {
             if (!hasBounceDodged)
-            {
                 canBounceDodge = true;
-            }
             if (!hasBounceTongued)
-            {
                 canBounceTongue = true;
-            }
         }
         if (((side == EffectsController.Side.Left || side == EffectsController.Side.Right) && Mathf.Abs(velocity.x) > 5f)
             || ((side == EffectsController.Side.Bottom || side == EffectsController.Side.Top) && Mathf.Abs(velocity.y) > 5f))
@@ -587,9 +553,7 @@ public class Character : MonoBehaviour
             int layer = groundLayer;
 
             if ((input.down && input.aButton) || (state == CharacterState.Bouncing && wasHitDownwards))
-            {
                 layer = terrainLayer;
-            }
 
             hit = Physics2D.Raycast(leftFootPos, Vector2.up, velocityT.y, layer);
             if (hit.collider != null)
@@ -604,9 +568,7 @@ public class Character : MonoBehaviour
                     velocity.y *= -0.5f;
                 }
                 else
-                {
                     velocity.y = 0f;
-                }
             }
         }
 
@@ -616,9 +578,7 @@ public class Character : MonoBehaviour
             int layer = groundLayer;
 
             if ((input.down && input.aButton) || (state == CharacterState.Bouncing && wasHitDownwards))
-            {
                 layer = terrainLayer;
-            }
 
             hit = Physics2D.Raycast(rightFootPos, Vector2.up, velocityT.y, layer);
             if (hit.collider != null)
@@ -627,6 +587,7 @@ public class Character : MonoBehaviour
                 velocityT.y = hit.point.y - rightFootPos.y;
                 if ((state == CharacterState.Bouncing && !RecoveringFromBounce) || (state == CharacterState.Tounge && wasBouncingBeforeTongue))
                 {
+
                     if (!bouncedThisFrame)
                     {
                         BounceFromWall(EffectsController.Side.Bottom);
@@ -634,9 +595,7 @@ public class Character : MonoBehaviour
                     }
                 }
                 else
-                {
                     velocity.y = 0f;
-                }
             }
         }
 
@@ -657,9 +616,7 @@ public class Character : MonoBehaviour
                     velocity.y = -velocity.y;
                 }
                 else
-                {
                     velocity.y = 0f;
-                }
             }
             hit = Physics2D.Raycast(leftHeadPos, Vector2.up, velocityT.y, terrainLayer);
             if (hit.collider != null)
@@ -675,9 +632,7 @@ public class Character : MonoBehaviour
                     }
                 }
                 else
-                {
                     velocity.y = 0f;
-                }
             }
         }
 
@@ -725,9 +680,7 @@ public class Character : MonoBehaviour
                     }
                 }
                 else
-                {
                     velocity.x = 0;
-                }
             }
         }
 
@@ -770,9 +723,7 @@ public class Character : MonoBehaviour
                     }
                 }
                 else
-                {
                     velocity.x = 0;
-                }
             }
         }
 
@@ -803,9 +754,7 @@ public class Character : MonoBehaviour
             {
                 gravityGraceTimeLeft -= t;
                 if (gravityGraceTimeLeft < 0f)
-                {
                     gravityGraceTimeLeft = 0f;
-                }
             }
         }
     }
@@ -821,9 +770,7 @@ public class Character : MonoBehaviour
         if (GameController.isTeamMode)
         {
             if (player.team != hitChar.player.team)
-            {
                 hitChar.GetHit(hitDir, attackChargeM + ingestPowerBoost, this);
-            }
         }
         else
         {
@@ -833,12 +780,11 @@ public class Character : MonoBehaviour
 
     public void GetTongueHit(Vector2 hitDir, Character attacker)
     {
+
         if (GameController.isTeamMode)
         {
             if (player.team == attacker.player.team)
-            {
                 return;
-            }
         }
         if (!IngestedFly && ingestingFly != null)
         {
@@ -846,9 +792,7 @@ public class Character : MonoBehaviour
             ingestingFly = null;
         }
         if (hitDir.y < -0.1f)
-        {
             wasHitDownwards = true;
-        }
         hasReachedApex = false;
         lastHitByPlayer = attacker.player;
         canBounceDodge = false;
@@ -858,9 +802,7 @@ public class Character : MonoBehaviour
         state = CharacterState.Bouncing;
         attackState = AttackState.Idle;
         if (hitDir.y == 0)
-        {
             hitDir.y = 0.1f;
-        }
         hitDir.Normalize();
         float totalPower = 25f;
 
@@ -878,9 +820,7 @@ public class Character : MonoBehaviour
     {
         hitsTaken++;
         if (hitVelocity.y < -0.1f)
-        {
             wasHitDownwards = true;
-        }
         if (!IngestedFly && ingestingFly != null)
         {
             ingestingFly.BeingIngested = false;
@@ -895,9 +835,7 @@ public class Character : MonoBehaviour
         state = CharacterState.Bouncing;
         attackState = AttackState.Idle;
         if (hitVelocity.y == 0)
-        {
             hitVelocity.y = 0.33f;
-        }
 
         skidRecoverTimeLeft = 0.5f;
         velocity = hitVelocity;
@@ -929,9 +867,7 @@ public class Character : MonoBehaviour
             ingestingFly = null;
         }
         if (hitDir.y < -0.1f)
-        {
             wasHitDownwards = true;
-        }
         hasReachedApex = false;
         lastHitByPlayer = attacker.player;
         canBounceDodge = false;
@@ -941,9 +877,7 @@ public class Character : MonoBehaviour
         state = CharacterState.Bouncing;
         attackState = AttackState.Idle;
         if (hitDir.y == 0)
-        {
             hitDir.y = 0.33f;
-        }
         hitDir.Normalize();
         float totalPower = 10f + hitsTaken * 10f + power * 30f;
 
@@ -971,13 +905,9 @@ public class Character : MonoBehaviour
         pos += (Vector3)velocityT;
 
         if (state == CharacterState.Attacking)
-        {
             pos.z = -0.1f;
-        }
         else
-        {
             pos.z = 0f;
-        }
 
         transform.position = pos;
     }
@@ -990,24 +920,23 @@ public class Character : MonoBehaviour
         {
             bounceGravityRestoreCounter += t;
             gravityThisFrame = Mathf.Lerp(bounceGravityMin, bounceGravityMax, Mathf.Clamp01(bounceGravityRestoreCounter / bounceGravityRestoreTime));
+
+
         }
 
         if (velocity.y >= 0f && velocity.y - gravityThisFrame * t < 0f)
         {
             hasReachedApex = true;
             if (hasReachedApex && !hasBounceDodged)
-            {
                 canBounceDodge = true;
-            }
             if (!hasBounceTongued)
-            {
                 canBounceTongue = true;
-            }
         }
 
         if (timeSinceHit > 1f && !hasBounceDodged)
         {
             canBounceDodge = true;
+
         }
 
         if (timeSinceHit > 1f && !hasBounceTongued)
@@ -1016,9 +945,7 @@ public class Character : MonoBehaviour
         }
 
         if (velocity.y > maxFallSpeed)
-        {
             velocity.y -= gravityThisFrame * t;
-        }
 
         //if (velocity.y < maxFallSpeed)
         //velocity.y = maxFallSpeed;
@@ -1058,9 +985,7 @@ public class Character : MonoBehaviour
         if (onGround && RecoveringFromBounce)
         {
             if (state == CharacterState.Tounge)
-            {
                 state = CharacterState.Bouncing;
-            }
             if (velocity.x > 0)
             {
                 velocity.x -= t * skidAccel;
@@ -1082,9 +1007,7 @@ public class Character : MonoBehaviour
             {
                 skidRecoverTimeLeft -= t;
                 if (skidRecoverTimeLeft <= 0f)
-                {
                     StopBouncing();
-                }
             }
         }
     }
@@ -1097,27 +1020,24 @@ public class Character : MonoBehaviour
             velocity.y -= gravity * gravM * t;
         }
         else
-        {
             velocity.y -= gravity * t;
-        }
         if (WallSliding)
         {
             if (velocity.y < maxFallSpeedWallSlide)
-            {
                 velocity.y = maxFallSpeedWallSlide;
-            }
         }
         else
         {
             if (velocity.y < maxFallSpeed)
-            {
                 velocity.y = maxFallSpeed;
-            }
         }
     }
 
     void RunPhysics()
     {
+
+
+
         if (state == CharacterState.Bouncing)
         {
             RunPhysicsBouncing();
@@ -1129,13 +1049,9 @@ public class Character : MonoBehaviour
         else if (state == CharacterState.Tounge)
         {
             if (wasBouncingBeforeTongue)
-            {
                 RunPhysicsBouncing();
-            }
             else
-            {
                 RunPhysicsNormal();
-            }
         }
         else
         {
@@ -1145,13 +1061,9 @@ public class Character : MonoBehaviour
         if (state != CharacterState.Attacking && state != CharacterState.Tounge && !input.strafe)
         {
             if (velocity.x > 0f)
-            {
                 facingDir = 1;
-            }
             if (velocity.x < 0f)
-            {
                 facingDir = -1;
-            }
         }
 
         jumpCooldownLeft -= t;
@@ -1160,13 +1072,9 @@ public class Character : MonoBehaviour
         if (state == CharacterState.Tounge)
         {
             if (tongueDir.x > 0)
-            {
                 facingDir = 1;
-            }
             else if (tongueDir.x < 0)
-            {
                 facingDir = -1;
-            }
         }
     }
 
@@ -1175,16 +1083,12 @@ public class Character : MonoBehaviour
         if (input.right)
         {
             if (velocity.x < maxRunSpeed * 0.5f)
-            {
                 velocity.x += bounceAccel * t;
-            }
         }
         else if (input.left)
         {
             if (velocity.x > -maxRunSpeed * 0.5f)
-            {
                 velocity.x -= bounceAccel * t;
-            }
         }
 
         if (canBounceDodge && input.aButton && !OnGround)
@@ -1195,26 +1099,16 @@ public class Character : MonoBehaviour
 
             Vector2 dir = Vector2.up;
             if (input.up)
-            {
                 dir += Vector2.up;
-            }
             if (input.down)
-            {
                 dir += Vector2.down;
-            }
             if (input.left)
-            {
                 dir += Vector2.left;
-            }
             if (input.right)
-            {
                 dir += Vector2.right;
-            }
 
             if (dir == Vector2.zero)
-            {
                 dir = Vector2.up;
-            }
             dir.Normalize();
 
             velocity = dir * bounceDodgePower;
@@ -1264,9 +1158,7 @@ public class Character : MonoBehaviour
                 velocity.x += t * airAccel;
             }
             if (velocity.x > maxRunSpeed)
-            {
                 velocity.x = maxRunSpeed;
-            }
         }
         else if (input.left && state == CharacterState.Normal)
         {
@@ -1291,9 +1183,7 @@ public class Character : MonoBehaviour
                 velocity.x -= t * airAccel;
             }
             if (velocity.x < -maxRunSpeed)
-            {
                 velocity.x = -maxRunSpeed;
-            }
         }
         else
         {
@@ -1303,17 +1193,13 @@ public class Character : MonoBehaviour
                 {
                     velocity.x -= t * runAccel;
                     if (velocity.x < 0)
-                    {
                         velocity.x = 0;
-                    }
                 }
                 else if (velocity.x < 0)
                 {
                     velocity.x += t * runAccel;
                     if (velocity.x > 0)
-                    {
                         velocity.x = 0;
-                    }
                 }
             }
         }
@@ -1363,13 +1249,9 @@ public class Character : MonoBehaviour
                 if (WallSliding)
                 {
                     if (WallSlideSide == EffectsController.Side.Left)
-                    {
                         velocity.x = maxRunSpeed;
-                    }
                     else if (WallSlideSide == EffectsController.Side.Right)
-                    {
                         velocity.x = -maxRunSpeed;
-                    }
                 }
 
 
@@ -1377,13 +1259,9 @@ public class Character : MonoBehaviour
                 //Debug.Break();
                 SoundController.PlaySoundEffect("Jump", 0.4f, transform.position);
                 if (WallSliding)
-                {
                     EffectsController.CreateJumpPuffStraight(transform.position, WallSlideSide);
-                }
                 else
-                {
                     EffectsController.CreateJumpPuffStraight(transform.position, EffectsController.Side.Bottom);
-                }
 
             }
             else if (jumpGraceTimeLeft > 0f) // && (velocity.y > 0f || !input.wasAButton))
@@ -1423,9 +1301,7 @@ public class Character : MonoBehaviour
             }
             int layer = terrainLayer;
             if (tongueDir.y < 0f)
-            {
                 layer = groundLayer;
-            }
 
             var fly = Physics2D.OverlapCircle((Vector2)transform.position + tongueOrigin + tongueDir * tongueDistance, 0.5f, flyLayer);
             if (fly != null)
@@ -1499,9 +1375,7 @@ public class Character : MonoBehaviour
             if (tongueState == TongueState.Extending)
             {
                 if (tongueDistance > tongueRange)
-                {
                     tongueState = TongueState.Retracting;
-                }
 
                 //if (!input.bButton && tongueDistance > minimumTongueDistance)
                 //    tongueState = TongueState.Retracting;
@@ -1533,13 +1407,9 @@ public class Character : MonoBehaviour
             if (tongueDistance <= 0f)
             {
                 if (wasBouncingBeforeTongue)
-                {
                     state = CharacterState.Bouncing;
-                }
                 else
-                {
                     state = CharacterState.Normal;
-                }
             }
         }
         else if (tongueState == TongueState.RetractingHitEnemy)
@@ -1548,13 +1418,9 @@ public class Character : MonoBehaviour
             if (tongueDistance <= 0f)
             {
                 if (wasBouncingBeforeTongue)
-                {
                     state = CharacterState.Bouncing;
-                }
                 else
-                {
                     state = CharacterState.Normal;
-                }
             }
         }
         else if (tongueState == TongueState.RetractingHitEnemyTongue)
@@ -1563,9 +1429,7 @@ public class Character : MonoBehaviour
             if (tongueDistance <= 0f)
             {
                 if (wasBouncingBeforeTongue)
-                {
                     state = CharacterState.Bouncing;
-                }
                 else
                 {
                     tongueState = TongueState.HitEnemyTongueStunned;
@@ -1580,9 +1444,7 @@ public class Character : MonoBehaviour
             if (tongueDistance <= 0f)
             {
                 if (wasBouncingBeforeTongue)
-                {
                     StopBouncing();
-                }
                 {
                     SoundController.PlaySoundEffect("Burp", 0.5f, TongueTipPos);
                     tongueState = TongueState.HitFlyBurping;
@@ -1614,17 +1476,13 @@ public class Character : MonoBehaviour
         if (state == CharacterState.Bouncing)
         {
             if (!canBounceTongue)
-            {
                 return;
-            }
             wasBouncingBeforeTongue = true;
             canBounceTongue = false;
             hasBounceDodged = true;
         }
         else
-        {
             wasBouncingBeforeTongue = false;
-        }
 
         state = CharacterState.Tounge;
         tongueDistance = 0f;
@@ -1633,13 +1491,9 @@ public class Character : MonoBehaviour
         SoundController.PlaySoundEffect("TongueLaunch", 0.5f, transform.position);
         tongueDir = facingDir * Vector2.right;
         if (input.right)
-        {
             tongueDir = Vector2.right;
-        }
         else if (input.left)
-        {
             tongueDir = Vector2.left;
-        }
         if (input.up)
         {
             if (!input.left && !input.right)
@@ -1674,5 +1528,9 @@ public class Character : MonoBehaviour
             }
         }
         tongueDir = tongueDir.normalized;
+
+
     }
+
+
 }

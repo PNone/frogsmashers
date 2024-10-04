@@ -7,47 +7,31 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/TitleScreen.unity
-    guid: 26d0df4ac166e9c4a8039060dda025a1
   - enabled: 1
     path: Assets/Scenes/Outro.unity
-    guid: 7f85c3736c38f2e47ae308a7dcf8ee93
   - enabled: 1
     path: Assets/Scenes/JoinScreen.unity
-    guid: 2d039c232449fc54db8ba55d87a78c66
   - enabled: 1
     path: Assets/Scenes/2DownSmash.unity
-    guid: fd6b2617e37812b4b94f4c7fa23ae38b
   - enabled: 1
     path: Assets/Scenes/3Moon.unity
-    guid: 252c5549d2bf8084c97d44d59c84b0d5
   - enabled: 1
     path: Assets/Scenes/4FinalFrogstination.unity
-    guid: 0660dbddb74f82747a1b18e286c41f74
   - enabled: 1
     path: Assets/Scenes/1BusStop.unity
-    guid: bd8d78f81f3bdf740a76a512f62c6fd7
   - enabled: 1
     path: Assets/Scenes/Rejects/3Podium.unity
-    guid: df45247cb65a131459cf629616b50959
   - enabled: 1
     path: Assets/Scenes/6Finale.unity
-    guid: 2f85e20881d323643b367cf3c365a634
   - enabled: 0
     path: Assets/Scenes/Rejects/TestGameplay 8.unity
-    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/Scenes/Rejects/7Showdown.unity
-    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/5Skyline.unity
-    guid: b5acf0ff14a86524f8f0c728821a2308
   - enabled: 1
     path: Assets/Scenes/Rejects/TestGameplay.unity
-    guid: cb5c02e93065fba42af4acde84e55cc0
   - enabled: 1
     path: Assets/Scenes/ScoreScreen.unity
-    guid: f9dcb365cc118e447906a5172c556881
   - enabled: 1
     path: Assets/Scenes/7Showdown.unity
-    guid: 2ad935a6a8b33aa4fbf6964d7566d97e
-  m_configObjects: {}
