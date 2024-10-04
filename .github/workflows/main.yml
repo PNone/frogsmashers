@@ -44,10 +44,10 @@ jobs:
         # https://github.com/game-ci/unity-request-activation-file/releases/
         uses: game-ci/unity-request-activation-file@v2
         with:
-          unityVersion: "2021.3.23f1"
+          unityVersion: "2022.3.11f1"
       # Upload artifact (Unity_v20XX.X.XXXX.alf)
       - name: Expose as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.getManualLicenseFile.outputs.filePath }}
           path: ${{ steps.getManualLicenseFile.outputs.filePath }}
@@ -65,10 +65,10 @@ jobs:
         targetPlatform:
           - StandaloneLinux64
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ${{ matrix.projectPath }}/Library
           key:
@@ -79,13 +79,17 @@ jobs:
             Library-${{ matrix.projectPath }}-
             Library-
       # https://github.com/game-ci/unity-builder/releases/
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
           buildName: FrogSmashersLinux64
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: FrogSmashersLinux64
           path: build
@@ -113,10 +117,10 @@ jobs:
           - StandaloneOSX
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ${{ matrix.projectPath }}/Library
           key:
@@ -126,14 +130,18 @@ jobs:
             Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
           buildName: FrogSmashersOSX
       - name: Upload Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FrogSmashersOSX
           path: build
@@ -146,38 +154,25 @@ jobs:
         with:
           token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersOSX.zip
-#       - name: Upload binaries to release
-#         uses: svenstaro/upload-release-action@v2
-#         with:
-#           repo_name: PNone/frogsmashers
-#           # A personal access token for the GitHub repository in which the release will be created and edited.
-#           # It is recommended to create the access token with the following scopes: `repo, user, admin:repo_hook`.
-#           repo_token: ${{ env.GIT_ACCESS_TOKEN }}
-#           file: build/StandaloneOSX
-#           asset_name: StandaloneOSX
-#           tag: ${{ github.ref }}
-#           overwrite: true
-#           body: "New release for frog smashers"
 
   buildWithWindows:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for Windows
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
         projectPath:
           - HohimBrueh
         targetPlatform:
-#           - StandaloneWindows
           - StandaloneWindows64
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ${{ matrix.projectPath }}/Library
           key:
@@ -187,16 +182,19 @@ jobs:
             Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           versioning: Tag
           buildName: FrogSmashersWindows64
       - name: Upload Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-#           name: StandaloneWindows64
           name: FrogSmashersWindows64
           path: build
       - name: Zip up output
@@ -204,19 +202,7 @@ jobs:
           cd build/StandaloneWindows64
           Compress-Archive -Path . -DestinationPath ../../FrogSmashersWindows64.zip
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ env.GIT_ACCESS_TOKEN }}
           files: FrogSmashersWindows64.zip
-#       - name: Upload binaries to release
-#         uses: svenstaro/upload-release-action@v2
-#         with:
-#           repo_name: PNone/frogsmashers
-#           # A personal access token for the GitHub repository in which the release will be created and edited.
-#           # It is recommended to create the access token with the following scopes: `repo, user, admin:repo_hook`.
-#           repo_token: ${{ env.GIT_ACCESS_TOKEN }}
-#           file: build/StandaloneWindows64
-#           asset_name: StandaloneWindows64
-#           tag: ${{ github.ref }}
-#           overwrite: true
-#           body: "New release for frog smashers"
